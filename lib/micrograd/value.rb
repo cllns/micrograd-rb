@@ -35,4 +35,3 @@ module Micrograd
     end
   end
 end
-
