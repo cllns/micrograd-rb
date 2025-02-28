@@ -22,5 +22,11 @@ RSpec.describe Micrograd::Value do
       expect(value.data).to eq(3)
       expect(value.label).to eq(:"a+b")
     end
+
+    it "supports multiplication" do
+      value = Micrograd::Value[a: 2] * Micrograd::Value[b: 3]
+      expect(value.data).to eq(6)
+      expect(value.label).to eq(:"a*b")
+    end
   end
 end

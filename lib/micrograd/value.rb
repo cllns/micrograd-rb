@@ -19,6 +19,10 @@ module Micrograd
     def +(other)
       Value.new(data: data + other.data, label: "#{label}+#{other.label}".to_sym)
     end
+
+    def *(other)
+      Value.new(data: data * other.data, label: "#{label}*#{other.label}".to_sym)
+    end
   end
 end
 
