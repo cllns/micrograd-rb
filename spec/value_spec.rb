@@ -14,6 +14,13 @@ RSpec.describe Micrograd::Value do
       expect(value.operation).to eq(:+)
     end
 
+    it "can have previous (passed in as an array, converted to set)" do
+      previous1 = Micrograd::Value.new(data: 1, label: :a)
+      previous2 = Micrograd::Value.new(data: 2, label: :b)
+      value = Micrograd::Value.new(data: 3, label: :c, previous: Set[previous1, previous2])
+      expect(value.previous).to eq(Set[previous1, previous2])
+    end
+
     it "supports bracket short-hand constructor" do
       value = Micrograd::Value[a: 123]
       expect(value.data).to eq(123)

@@ -2,12 +2,13 @@
 
 module Micrograd
   class Value
-    attr_reader :data, :label, :operation
+    attr_reader :data, :label, :operation, :previous
 
-    def initialize(data:, label:, operation: nil)
+    def initialize(data:, label:, operation: nil, previous: [])
       @data = data
       @label = label
       @operation = operation
+      @previous = previous.to_set
     end
 
     def self.[](**input)
