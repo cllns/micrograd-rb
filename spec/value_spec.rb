@@ -9,6 +9,11 @@ RSpec.describe Micrograd::Value do
       expect(value.label).to eq(:a)
     end
 
+    it "can have operation" do
+      value = Micrograd::Value.new(data: 1, label: :a, operation: :+)
+      expect(value.operation).to eq(:+)
+    end
+
     it "supports bracket short-hand constructor" do
       value = Micrograd::Value[a: 123]
       expect(value.data).to eq(123)

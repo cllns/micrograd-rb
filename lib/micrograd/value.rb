@@ -2,11 +2,12 @@
 
 module Micrograd
   class Value
-    attr_reader :data, :label
+    attr_reader :data, :label, :operation
 
-    def initialize(data:, label:)
+    def initialize(data:, label:, operation: nil)
       @data = data
       @label = label
+      @operation = operation
     end
 
     def self.[](**input)
@@ -17,11 +18,19 @@ module Micrograd
     end
 
     def +(other)
-      Value.new(data: data + other.data, label: "#{label}+#{other.label}".to_sym)
+      Value.new(
+        data: data + other.data,
+        label: "#{label}+#{other.label}".to_sym,
+        operation: :+
+      )
     end
 
     def *(other)
-      Value.new(data: data * other.data, label: "#{label}*#{other.label}".to_sym)
+      Value.new(
+        data: data * other.data,
+        label: "#{label}*#{other.label}".to_sym,
+        operation: :*
+      )
     end
   end
 end
