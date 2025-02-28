@@ -33,5 +33,10 @@ module Micrograd
         operation: :*
       )
     end
+
+    def generate_d2
+      require 'micrograd/visualizer'
+      Visualizer.new(self).generate_d2
+    end
   end
 end
