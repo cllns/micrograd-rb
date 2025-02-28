@@ -15,6 +15,10 @@ module Micrograd
       label, data = input.first
       new(label: label, data: data)
     end
+
+    def +(other)
+      Value.new(data: data + other.data, label: "#{label}+#{other.label}".to_sym)
+    end
   end
 end
 
