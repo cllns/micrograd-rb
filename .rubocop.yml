@@ -1,5 +1,5 @@
 inherit_from:
-  - "https://www.goodcop.style/base.yml"
+  - "https://raw.githubusercontent.com/joeldrapper/goodcop/refs/heads/main/base.yml"
 
 AllCops:
   TargetRubyVersion: 3.4
