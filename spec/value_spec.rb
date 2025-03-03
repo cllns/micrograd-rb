@@ -41,15 +41,36 @@ RSpec.describe Micrograd::Value do
 
   describe "operations" do
     it "supports addition" do
-      value = Micrograd::Value[a: 1] + Micrograd::Value[b: 2]
+      a = Micrograd::Value[a: 1]
+      b = Micrograd::Value[b: 2]
+      value = a + b
       expect(value.data).to eq(3)
       expect(value.label).to eq(:"a+b")
+      expect(value.operation).to eq(:+)
+      expect(value.previous).to eq(Set[a, b])
     end
 
     it "supports multiplication" do
-      value = Micrograd::Value[a: 2] * Micrograd::Value[b: 3]
+      a = Micrograd::Value[a: 2]
+      b = Micrograd::Value[b: 3]
+      value = a * b
       expect(value.data).to eq(6)
       expect(value.label).to eq(:"a*b")
+      expect(value.operation).to eq(:*)
+      expect(value.previous).to eq(Set[a, b])
+    end
+  end
+
+  describe "with_label" do
+    it "allows re-assigning label" do
+      a = Micrograd::Value[a: 2]
+      b = Micrograd::Value[b: 3]
+      value = (a * b).with_label(:c)
+
+      expect(value.data).to eq(6)
+      expect(value.label).to eq(:c)
+      expect(value.operation).to eq(:*)
+      expect(value.previous).to eq(Set[a, b])
     end
   end
 end

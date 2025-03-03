@@ -21,7 +21,8 @@ module Micrograd
       Value.new(
         data: data + other.data,
         label: "#{label}+#{other.label}".to_sym,
-        operation: :+
+        operation: :+,
+        previous: [self, other]
       )
     end
 
@@ -29,8 +30,14 @@ module Micrograd
       Value.new(
         data: data * other.data,
         label: "#{label}*#{other.label}".to_sym,
-        operation: :*
+        operation: :*,
+        previous: [self, other]
       )
+    end
+
+    def with_label(new_label)
+      @label = new_label
+      self
     end
 
     def generate_image
