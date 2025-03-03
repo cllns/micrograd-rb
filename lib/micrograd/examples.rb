@@ -8,7 +8,7 @@ module Micrograd
     def initialize
       a = Value[a: 2]
       b = Value[b: -3]
-      c = Value.new(data: -6, label: :c, previous: [a, b], operation: :*)
+      c = Value[c: 6, previous: [a, b], operation: :*]
       @node = c
     end
 
