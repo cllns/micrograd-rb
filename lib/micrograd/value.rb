@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
+require_relative "topo_sort"
+
 module Micrograd
   class Value
-    attr_reader :data, :label, :grad, :backward, :operation, :previous
+    attr_reader :data, :label, :grad, :_backward, :operation, :previous
 
-    attr_writer :backward
+    attr_writer :_backward
 
     def initialize(data:, label:, operation: nil, previous: [])
       @data = data
       @label = label
       @grad = nil
-      @backward = -> {}
+      @_backward = -> {}
       @operation = operation
       @previous = previous.to_set
     end
@@ -29,7 +31,7 @@ module Micrograd
         operation: :+,
         previous: [self, other]
       ).tap do |value|
-        value.backward = lambda do
+        value._backward = lambda do
           self.with_grad(value.grad)
           other.with_grad(value.grad)
         end
@@ -43,7 +45,7 @@ module Micrograd
         operation: :*,
         previous: [self, other]
       ).tap do |value|
-        value.backward = lambda {
+        value._backward = lambda {
           self.with_grad(other.data * value.grad)
           other.with_grad(data * value.grad)
         }
@@ -61,7 +63,7 @@ module Micrograd
         operation: :tanh,
         previous: [self]
       ).tap do |value|
-        value.backward = lambda do
+        value._backward = lambda do
           self.with_grad(value.grad * (1 - t**2))
         end
       end
@@ -79,6 +81,11 @@ module Micrograd
 
     def generate_image
       Visualizer.new(self).generate_image
+    end
+
+    def backward
+      @grad = 1
+      Micrograd::TopoSort.new(self).call.reverse.map(&:_backward).map(&:call)
     end
   end
 end

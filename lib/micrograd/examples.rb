@@ -18,9 +18,9 @@ module Micrograd
 
       x1w1x2w2 = (x1w1 + x2w2).with_label(:x1w1x2w2)
       n = (x1w1x2w2 + b).with_label(:n)
-      o = n.tanh.with_label(:o).with_grad(1)
+      o = n.tanh.with_label(:o)
 
-      Micrograd::TopoSort.new(o).call.reverse.map(&:backward).map(&:call)
+      o.backward
 
       @node = o
     end

@@ -12,7 +12,7 @@ module Micrograd
     private
 
     def build(node:, topo: [], visited: [])
-      if !visited.include?(node)
+      unless visited.include?(node)
         visited << node
 
         node.previous.each do |child|
