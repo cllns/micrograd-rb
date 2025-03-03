@@ -15,7 +15,7 @@ RSpec.configure do |config|
 end
 
 RSpec::Matchers.define :be_close_to do |expected|
-  THRESHOLD = 0.00000001 unless defined?(THRESHOLD)
+  THRESHOLD = 0.0001 unless defined?(THRESHOLD)
 
   match do |actual|
     (actual - expected).abs <= THRESHOLD

@@ -57,6 +57,15 @@ RSpec.describe Micrograd::Value do
       expect(value.operation).to eq(:tanh)
       expect(value.previous).to eq(Set[a])
     end
+
+    it "supports exponentiation" do
+      a = Micrograd::Value[a: 2]
+      value = a.exp
+      expect(value.data).to be_close_to(7.389)
+      expect(value.label).to eq(:"exp(a)")
+      expect(value.operation).to eq(:exp)
+      expect(value.previous).to eq(Set[a])
+    end
   end
 
   describe "with_ methods" do

@@ -77,6 +77,19 @@ module Micrograd
       end
     end
 
+    def exp
+      Value.new(
+        data: Math.exp(data),
+        label: "exp(#{label})".to_sym,
+        operation: :exp,
+        previous: [self]
+    ).tap do |value|
+        value._backward = lambda do
+          self.with_grad(value.grad * value.data)
+        end
+      end
+    end
+
     def with_label(new_label)
       @label = new_label
       self
