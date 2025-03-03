@@ -120,5 +120,13 @@ RSpec.describe Micrograd::Value do
       expect(b.grad).to be_close_to(0.5)
       expect(n.grad).to be_close_to(0.5)
     end
+
+    it "handles node being used multiple times" do
+      a = Micrograd::Value[a: 2]
+      value = (a + a).with_label(:double_a)
+      value.backward
+
+      expect(a.grad).to eq(2)
+    end
   end
 end
