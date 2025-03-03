@@ -37,6 +37,18 @@ module Micrograd
       )
     end
 
+    def tanh
+      Value.new(
+        data: (Math.exp(2 * data) - 1) / (Math.exp(2 * data) + 1),
+        # Other valid options
+        # data: Math.tanh(data),
+        # data: (Math.exp(data) - Math.exp(-data)) / (Math.exp(data) + Math.exp(-data)),
+        label: "tanh(#{label})".to_sym,
+        operation: :tanh,
+        previous: [self]
+      )
+    end
+
     def with_label(new_label)
       @label = new_label
       self

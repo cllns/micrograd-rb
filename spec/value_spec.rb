@@ -48,6 +48,15 @@ RSpec.describe Micrograd::Value do
       expect(value.operation).to eq(:*)
       expect(value.previous).to eq(Set[a, b])
     end
+
+    it "supports tanh" do
+      a = Micrograd::Value[a: 1]
+      value = a.tanh
+      expect(value.data).to eq(0.7615941559557649)
+      expect(value.label).to eq(:"tanh(a)")
+      expect(value.operation).to eq(:tanh)
+      expect(value.previous).to eq(Set[a])
+    end
   end
 
   describe "with_label" do
