@@ -80,7 +80,7 @@ RSpec.describe Micrograd::Value do
   end
 
   describe "backward" do
-    it "calls computes for 2 sets of weights and inputs" do
+    it "calculates gradients for 2 sets of weights and inputs" do
       x1 = Micrograd::Value[x1: 2]
       x2 = Micrograd::Value[x2: 0]
       w1 = Micrograd::Value[w1: -3]
@@ -96,7 +96,7 @@ RSpec.describe Micrograd::Value do
       expect(w2.grad).to eq(0)
     end
 
-    it "calls for full example set of weights and inputs" do
+    it "calculates gradients for full example set of weights and inputs" do
       x1 = Micrograd::Value[x1: 2]
       x2 = Micrograd::Value[x2: 0]
       w1 = Micrograd::Value[w1: -3]
@@ -109,16 +109,16 @@ RSpec.describe Micrograd::Value do
       n = (x1w1x2w2 + b).with_label(:n)
       o = n.tanh.with_label(:o)
       o.backward
-      expect(x1.grad).to within(0.000001).of(-1.5)
-      expect(w1.grad).to within(0.000001).of(1)
-      expect(x2.grad).to within(0.000001).of(0.5)
+      expect(x1.grad).to be_close_to(-1.5)
+      expect(w1.grad).to be_close_to(1)
+      expect(x2.grad).to be_close_to(0.5)
       expect(w2.grad).to eq(0)
 
-      expect(x1w1.grad).to within(0.000001).of(0.5)
-      expect(x2w2.grad).to within(0.000001).of(0.5)
-      expect(x1w1x2w2.grad).to within(0.000001).of(0.5)
-      expect(b.grad).to within(0.000001).of(0.5)
-      expect(n.grad).to within(0.000001).of(0.5)
+      expect(x1w1.grad).to be_close_to(0.5)
+      expect(x2w2.grad).to be_close_to(0.5)
+      expect(x1w1x2w2.grad).to be_close_to(0.5)
+      expect(b.grad).to be_close_to(0.5)
+      expect(n.grad).to be_close_to(0.5)
     end
   end
 end

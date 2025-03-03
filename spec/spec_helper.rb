@@ -13,3 +13,19 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+RSpec::Matchers.define :be_close_to do |expected|
+  THRESHOLD = 0.00000001 unless defined?(THRESHOLD)
+
+  match do |actual|
+    (actual - expected).abs <= THRESHOLD
+  end
+
+  failure_message do |actual|
+    "expected #{actual} to be within #{THRESHOLD} of #{expected}"
+  end
+
+  failure_message_when_negated do |actual|
+    "expected #{actual} not to be within #{THRESHOLD} of #{expected}"
+  end
+end
