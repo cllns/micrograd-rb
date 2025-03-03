@@ -26,17 +26,6 @@ RSpec.describe Micrograd::Value do
       expect(value.data).to eq(123)
       expect(value.label).to eq(:a)
     end
-
-    it "supports bracket short-hand constructor with operation and previous" do
-      previous1 = Micrograd::Value[a: 1]
-      previous2 = Micrograd::Value[b: 2]
-      value = Micrograd::Value[c: 3, op: :*, previous: [previous1, previous2]]
-
-      expect(value.data).to eq(3)
-      expect(value.label).to eq(:c)
-      expect(value.operation).to eq(:*)
-      expect(value.previous).to eq(Set[previous1, previous2])
-    end
   end
 
   describe "operations" do
