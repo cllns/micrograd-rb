@@ -23,7 +23,8 @@ module Micrograd
       nodes, edges = build_graph(node)
       d2_representation = "direction: right\n"
       d2_representation += nodes.map do |label, node|
-        %("#{label}": "#{label}: #{node.data}\\ngrad: #{node.grad || "nil"}"\n)
+        formatted_data = format("%.4f", node.data.to_s)
+        %("#{label}": "#{label}: #{formatted_data}\\ngrad: #{node.grad || "nil"}"\n)
       end.join
       d2_representation += edges.map { |from, to, op| %(#{from} -> "#{to}": #{op}\n) }.join
       d2_representation
