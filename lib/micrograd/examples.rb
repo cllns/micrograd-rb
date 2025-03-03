@@ -2,6 +2,7 @@
 
 require_relative "value"
 require_relative "visualizer"
+require_relative "topo_sort"
 
 module Micrograd
   class Examples
@@ -19,11 +20,7 @@ module Micrograd
       n = (x1w1x2w2 + b).with_label(:n)
       o = n.tanh.with_label(:o).with_grad(1)
 
-      o.backward.call
-      n.backward.call
-      x1w1x2w2.backward.call
-      x1w1.backward.call
-      x2w2.backward.call
+      Micrograd::TopoSort.new(o).call.reverse.map(&:backward).map(&:call)
 
       @node = o
     end
