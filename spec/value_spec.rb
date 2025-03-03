@@ -129,4 +129,24 @@ RSpec.describe Micrograd::Value do
       expect(a.grad).to eq(2)
     end
   end
+
+  describe "conversion when computing with scalars" do
+    it "converts scalar to value on addition" do
+      a = Micrograd::Value[a: 1]
+      value = a + 2
+      expect(value.data).to eq(3)
+      expect(value.label).to eq(:"a+scalar_2")
+      expect(value.previous.map(&:label)).to include(:scalar_2)
+      expect(value.previous.map(&:data)).to include(2)
+    end
+
+    it "converts scalar to value on multiplication" do
+      a = Micrograd::Value[a: 1]
+      value = a * 2
+      expect(value.data).to eq(2)
+      expect(value.label).to eq(:"a*scalar_2")
+      expect(value.previous.map(&:label)).to include(:scalar_2)
+      expect(value.previous.map(&:data)).to include(2)
+    end
+  end
 end

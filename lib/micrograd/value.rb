@@ -25,6 +25,10 @@ module Micrograd
     end
 
     def +(other)
+      unless other.is_a?(Value)
+        other = Value[:"scalar_#{other}" => other]
+      end
+
       Value.new(
         data: data + other.data,
         label: "#{label}+#{other.label}".to_sym,
@@ -39,6 +43,10 @@ module Micrograd
     end
 
     def *(other)
+      unless other.is_a?(Value)
+        other = Value[:"scalar_#{other}" => other]
+      end
+
       Value.new(
         data: data * other.data,
         label: "#{label}*#{other.label}".to_sym,
