@@ -18,7 +18,11 @@ module Micrograd
 
       x1w1x2w2 = (x1w1 + x2w2).with_label(:x1w1x2w2)
       n = (x1w1x2w2 + b).with_label(:n)
-      o = n.tanh.with_label(:o)
+
+      # o = n.tanh.with_label(:o)
+      # Or, the equivalent implemented from our operations:
+      e = (2 * n).exp
+      o = (e - 1) / (e + 1)
 
       o.backward
 

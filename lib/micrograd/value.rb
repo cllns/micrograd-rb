@@ -42,6 +42,14 @@ module Micrograd
       end
     end
 
+    def -(other)
+      self + (-other)
+    end
+
+    def -@
+      self * -1
+    end
+
     def *(other)
       unless other.is_a?(Value)
         other = Value[:"scalar_#{other}" => other]
@@ -57,6 +65,27 @@ module Micrograd
           with_grad(other.data * value.grad)
           other.with_grad(data * value.grad)
         }
+      end
+    end
+
+    def /(other)
+      self * (other ** -1)
+    end
+
+    def **(pow)
+      unless pow.is_a?(Numeric)
+        raise TypeError.new("Cannot raise #{pow.class} to a power")
+      end
+
+      Value.new(
+        data: data ** pow,
+        label: :"#{label}**#{pow}",
+        operation: :**,
+        previous: [self]
+      ).tap do |value|
+        value._backward = lambda do
+          with_grad(value.grad * pow * (data ** (pow - 1)))
+        end
       end
     end
 
