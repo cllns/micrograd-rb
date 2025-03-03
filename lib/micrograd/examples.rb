@@ -9,8 +9,8 @@ module Micrograd
       a = Value[a: 2]
       b = Value[b: -3]
       c = Value[c: 10]
-      e = a * b
-      d = e + c
+      e = (a * b).with_label(:e)
+      d = (e + c).with_label(:d)
       f = Value[f: -2]
       loss = (d * f).with_label(:L)
 
