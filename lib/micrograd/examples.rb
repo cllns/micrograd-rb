@@ -10,14 +10,21 @@ module Micrograd
       x2 = Value[x2: 0]
       w1 = Value[w1: -3]
       w2 = Value[w2: 1]
-      b = Value[b: 6.7]
+      b = Value[b: 6.8813735870195432]
 
       x1w1 = (x1 * w1).with_label(:x1w1)
       x2w2 = (x2 * w2).with_label(:x2w2)
 
       x1w1x2w2 = (x1w1 + x2w2).with_label(:x1w1x2w2)
       n = (x1w1x2w2 + b).with_label(:n)
-      o = n.tanh.with_label(:o)
+      o = n.tanh.with_label(:o).with_grad(1)
+
+      o.backward.call
+      n.backward.call
+      x1w1x2w2.backward.call
+      x1w1.backward.call
+      x2w2.backward.call
+
       @node = o
     end
 

@@ -2,13 +2,15 @@
 
 module Micrograd
   class Value
-    attr_reader :data, :label, :grad, :operation, :previous
+    attr_reader :data, :label, :grad, :backward, :operation, :previous
 
-    def initialize(data:, label:, backward: -> {}, operation: nil, previous: [])
+    attr_writer :backward, :grad
+
+    def initialize(data:, label:, operation: nil, previous: [])
       @data = data
       @label = label
       @grad = nil
-      @backward = backward
+      @backward = -> {}
       @operation = operation
       @previous = previous.to_set
     end
@@ -24,26 +26,28 @@ module Micrograd
       Value.new(
         data: data + other.data,
         label: "#{label}+#{other.label}".to_sym,
-        backward: lambda {
-          self.grad = 1.0
-          other.grad = 1.0
-        },
         operation: :+,
         previous: [self, other]
-      )
+      ).tap do |value|
+        value.backward = lambda do
+          self.grad = value.grad
+          other.grad = value.grad
+        end
+      end
     end
 
     def *(other)
       Value.new(
         data: data * other.data,
         label: "#{label}*#{other.label}".to_sym,
-        backward: lambda {
-          self.grad = other.data * out.grad,
-                      other.grad = data * out.grad
-        },
         operation: :*,
         previous: [self, other]
-      )
+      ).tap do |value|
+        value.backward = lambda {
+          self.grad = other.data * value.grad
+          other.grad = data * value.grad
+        }
+      end
     end
 
     def tanh
@@ -54,14 +58,20 @@ module Micrograd
       Value.new(
         data: t,
         label: "tanh(#{label})".to_sym,
-        backward: -> { self.grad = (1 - t**2) * out.grad },
         operation: :tanh,
         previous: [self]
-      )
+      ).tap do |value|
+        value.backward = -> { self.grad = value.grad * (1 - t**2) }
+      end
     end
 
     def with_label(new_label)
       @label = new_label
+      self
+    end
+
+    def with_grad(grad)
+      @grad = grad
       self
     end
 

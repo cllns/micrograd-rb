@@ -59,7 +59,7 @@ RSpec.describe Micrograd::Value do
     end
   end
 
-  describe "with_label" do
+  describe "with_ methods" do
     it "allows re-assigning label" do
       a = Micrograd::Value[a: 2]
       b = Micrograd::Value[b: 3]
@@ -69,6 +69,13 @@ RSpec.describe Micrograd::Value do
       expect(value.label).to eq(:c)
       expect(value.operation).to eq(:*)
       expect(value.previous).to eq(Set[a, b])
+    end
+
+    it "allows re-assigning grad" do
+      a = Micrograd::Value[a: 2]
+      b = Micrograd::Value[b: 3]
+      value = (a * b).with_grad(1)
+      expect(value.grad).to eq(1)
     end
   end
 end

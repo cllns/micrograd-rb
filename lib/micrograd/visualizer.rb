@@ -23,8 +23,7 @@ module Micrograd
       nodes, edges = build_graph(node)
       d2_representation = "direction: right\n"
       d2_representation += nodes.map do |label, node|
-        formatted_data = format("%.4f", node.data.to_s)
-        %("#{label}": "#{label}: #{formatted_data}\\ngrad: #{node.grad || "nil"}"\n)
+        %("#{label}": "#{label}: #{round(node.data)}\\ngrad: #{round(node.grad) || "nil"}"\n)
       end.join
       d2_representation += edges.map { |from, to, op| %(#{from} -> "#{to}": #{op}\n) }.join
       d2_representation
@@ -33,6 +32,14 @@ module Micrograd
     def generate_image
       File.write("graph.d2", to_d2)
       Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
+    end
+
+    def round(float)
+      if float.nil?
+        "nil"
+      else
+        format("%.4f", float)
+      end
     end
   end
 end
