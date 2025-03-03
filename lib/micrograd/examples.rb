@@ -9,10 +9,12 @@ module Micrograd
       a = Value[a: 2]
       b = Value[b: -3]
       c = Value[c: 10]
-      d = a * b
-      e = d + c
+      e = a * b
+      d = e + c
+      f = Value[f: -2]
+      loss = (d * f).with_label(:L)
 
-      @node = e
+      @node = loss
     end
 
     def call
