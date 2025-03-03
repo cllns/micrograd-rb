@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module Micrograd
   class TopoSort
@@ -16,7 +17,7 @@ module Micrograd
         visited << node
 
         node.previous.each do |child|
-          build(node: child, topo: topo, visited: visited)
+          build(node: child, topo:, visited:)
         end
 
         topo << node

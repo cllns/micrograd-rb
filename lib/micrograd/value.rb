@@ -18,10 +18,10 @@ module Micrograd
     end
 
     def self.[](**input)
-      raise ArgumentError, "Expected a single key-value pair" unless input.size == 1
+      raise ArgumentError.new("Expected a single key-value pair") unless input.size == 1
 
       label, data = input.first
-      new(label: label, data: data)
+      new(label:, data:)
     end
 
     def +(other)
@@ -31,12 +31,12 @@ module Micrograd
 
       Value.new(
         data: data + other.data,
-        label: "#{label}+#{other.label}".to_sym,
+        label: :"#{label}+#{other.label}",
         operation: :+,
         previous: [self, other]
       ).tap do |value|
         value._backward = lambda do
-          self.with_grad(value.grad)
+          with_grad(value.grad)
           other.with_grad(value.grad)
         end
       end
@@ -49,12 +49,12 @@ module Micrograd
 
       Value.new(
         data: data * other.data,
-        label: "#{label}*#{other.label}".to_sym,
+        label: :"#{label}*#{other.label}",
         operation: :*,
         previous: [self, other]
       ).tap do |value|
         value._backward = lambda {
-          self.with_grad(other.data * value.grad)
+          with_grad(other.data * value.grad)
           other.with_grad(data * value.grad)
         }
       end
@@ -67,12 +67,12 @@ module Micrograd
       # (Math.exp(data) - Math.exp(-data)) / (Math.exp(data) + Math.exp(-data))
       Value.new(
         data: t,
-        label: "tanh(#{label})".to_sym,
+        label: :"tanh(#{label})",
         operation: :tanh,
         previous: [self]
       ).tap do |value|
         value._backward = lambda do
-          self.with_grad(value.grad * (1 - t**2))
+          with_grad(value.grad * (1 - (t ** 2)))
         end
       end
     end
@@ -80,12 +80,12 @@ module Micrograd
     def exp
       Value.new(
         data: Math.exp(data),
-        label: "exp(#{label})".to_sym,
+        label: :"exp(#{label})",
         operation: :exp,
         previous: [self]
-    ).tap do |value|
+      ).tap do |value|
         value._backward = lambda do
-          self.with_grad(value.grad * value.data)
+          with_grad(value.grad * value.data)
         end
       end
     end
@@ -114,7 +114,7 @@ module Micrograd
       if other.is_a?(Numeric)
         [Value[:"scalar_#{other}" => other], self]
       else
-        raise TypeError, "Cannot coerce #{other.class} into Value"
+        raise TypeError.new("Cannot coerce #{other.class} into Value")
       end
     end
   end
