@@ -11,11 +11,10 @@ module Micrograd
       @previous = previous.to_set
     end
 
-    def self.[](**input)
-      raise ArgumentError, "Expected a single key-value pair" unless input.size == 1
-
-      label, data = input.first
-      new(label: label, data: data)
+    def self.[](**args)
+      label, data = args.first
+      previous = args.fetch(:previous, [])
+      new(label: label, data: data, operation: args[:op], previous: previous)
     end
 
     def +(other)
