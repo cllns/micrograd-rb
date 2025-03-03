@@ -96,5 +96,13 @@ module Micrograd
       @grad = 1
       Micrograd::TopoSort.new(self).call.reverse.map(&:_backward).map(&:call)
     end
+
+    def coerce(other)
+      if other.is_a?(Numeric)
+        [Value[:"scalar_#{other}" => other], self]
+      else
+        raise TypeError, "Cannot coerce #{other.class} into Value"
+      end
+    end
   end
 end
