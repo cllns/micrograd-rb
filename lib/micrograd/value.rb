@@ -4,7 +4,7 @@ module Micrograd
   class Value
     attr_reader :data, :label, :grad, :backward, :operation, :previous
 
-    attr_writer :backward, :grad
+    attr_writer :backward
 
     def initialize(data:, label:, operation: nil, previous: [])
       @data = data
@@ -30,8 +30,8 @@ module Micrograd
         previous: [self, other]
       ).tap do |value|
         value.backward = lambda do
-          self.grad = value.grad
-          other.grad = value.grad
+          self.with_grad(value.grad)
+          other.with_grad(value.grad)
         end
       end
     end
@@ -44,8 +44,8 @@ module Micrograd
         previous: [self, other]
       ).tap do |value|
         value.backward = lambda {
-          self.grad = other.data * value.grad
-          other.grad = data * value.grad
+          self.with_grad(other.data * value.grad)
+          other.with_grad(data * value.grad)
         }
       end
     end
@@ -61,7 +61,9 @@ module Micrograd
         operation: :tanh,
         previous: [self]
       ).tap do |value|
-        value.backward = -> { self.grad = value.grad * (1 - t**2) }
+        value.backward = lambda do
+          self.with_grad(value.grad * (1 - t**2))
+        end
       end
     end
 
