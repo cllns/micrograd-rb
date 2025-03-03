@@ -1,11 +1,12 @@
-require "set"
+# frozen_string_literal: true
+
 require "open3"
 
 module Micrograd
   class Visualizer
     attr_reader :node, :output_file
 
-    def initialize(node, output_file: "graph.png")
+    def initialize(node, output_file: "graph.svg")
       @node = node
       @output_file = output_file
     end
@@ -21,14 +22,14 @@ module Micrograd
     def to_d2
       nodes, edges = build_graph(node)
       d2_representation = "direction: right\n"
-      d2_representation += nodes.map { |label, node| %(#{label}: "#{label}: #{node.data}") }.join("\n")
-      d2_representation += "\n"
-      d2_representation += edges.map { |from, to, op| %(#{from} -> #{to}: #{op})}.join("\n")
+      d2_representation += nodes.map { |label, node| %(#{label}: "#{label}: #{node.data}"\n) }.join
+      d2_representation += edges.map { |from, to, op| %(#{from} -> #{to}: #{op}\n) }.join
       d2_representation
     end
 
-    def generate_d2
+    def generate_image
       File.write("graph.d2", to_d2)
+      Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
     end
   end
 end
