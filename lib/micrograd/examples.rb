@@ -8,12 +8,15 @@ module Micrograd
     def initialize
       a = Value[a: 2]
       b = Value[b: -3]
-      c = Value[c: 6, previous: [a, b], operation: :*]
-      @node = c
+      c = Value[c: 10]
+      d = a * b
+      e = d + c
+
+      @node = e
     end
 
     def call
-      p "gen image"
+      puts "generating image of graph"
       Visualizer.new(@node).generate_image
     end
   end
