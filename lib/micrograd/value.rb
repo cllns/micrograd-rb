@@ -11,10 +11,11 @@ module Micrograd
     def initialize(data:, label:, operation: nil, previous: [])
       @data = data
       @label = label
-      @grad = nil
-      @_backward = -> {}
       @operation = operation
       @previous = previous.to_set
+
+      @grad = nil
+      @_backward = -> {}
     end
 
     def self.[](**input)
@@ -30,13 +31,13 @@ module Micrograd
       end
 
       Value.new(
-        data: data + other.data,
-        label: :"#{label}+#{other.label}",
+        data: self.data + other.data,
+        label: :"#{self.label}+#{other.label}",
         operation: :+,
         previous: [self, other]
       ).tap do |value|
         value._backward = lambda do
-          with_grad(value.grad)
+          self.with_grad(value.grad)
           other.with_grad(value.grad)
         end
       end
@@ -56,14 +57,14 @@ module Micrograd
       end
 
       Value.new(
-        data: data * other.data,
-        label: :"#{label}*#{other.label}",
+        data: self.data * other.data,
+        label: :"#{self.label}*#{other.label}",
         operation: :*,
         previous: [self, other]
       ).tap do |value|
         value._backward = lambda {
-          with_grad(other.data * value.grad)
-          other.with_grad(data * value.grad)
+          self.with_grad(other.data * value.grad)
+          other.with_grad(self.data * value.grad)
         }
       end
     end
@@ -78,43 +79,43 @@ module Micrograd
       end
 
       Value.new(
-        data: data ** pow,
-        label: :"#{label}**#{pow}",
+        data: self.data ** pow,
+        label: :"#{self.label}**#{pow}",
         operation: :**,
         previous: [self]
       ).tap do |value|
         value._backward = lambda do
-          with_grad(value.grad * pow * (data ** (pow - 1)))
+          self.with_grad(value.grad * pow * (self.data ** (pow - 1)))
         end
       end
     end
 
     def tanh
-      t = (Math.exp(2 * data) - 1) / (Math.exp(2 * data) + 1)
+      t = (Math.exp(2 * self.data) - 1) / (Math.exp(2 * self.data) + 1)
       # Other valid options
-      # Math.tanh(data)
-      # (Math.exp(data) - Math.exp(-data)) / (Math.exp(data) + Math.exp(-data))
+      # Math.tanh(self.data)
+      # (Math.exp(self.data) - Math.exp(-self.data)) / (Math.exp(self.data) + Math.exp(-self.data))
       Value.new(
         data: t,
-        label: :"tanh(#{label})",
+        label: :"tanh(#{self.label})",
         operation: :tanh,
         previous: [self]
       ).tap do |value|
         value._backward = lambda do
-          with_grad(value.grad * (1 - (t ** 2)))
+          self.with_grad(value.grad * (1 - (t ** 2)))
         end
       end
     end
 
     def exp
       Value.new(
-        data: Math.exp(data),
-        label: :"exp(#{label})",
+        data: Math.exp(self.data),
+        label: :"exp(#{self.label})",
         operation: :exp,
         previous: [self]
       ).tap do |value|
         value._backward = lambda do
-          with_grad(value.grad * value.data)
+          self.with_grad(value.grad * value.data)
         end
       end
     end
