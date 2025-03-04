@@ -6,16 +6,14 @@ module Micrograd
   class Value
     attr_reader :data, :label, :grad, :_backward, :operation, :previous
 
-    attr_writer :_backward
-
-    def initialize(data:, label:, operation: nil, previous: [])
+    def initialize(data:, label:, operation: nil, previous: [], _backward: -> (_) {})
       @data = data
       @label = label
       @operation = operation
       @previous = previous.to_set
+      @_backward = _backward
 
       @grad = nil
-      @_backward = -> {}
     end
 
     def self.[](**input)
@@ -34,13 +32,12 @@ module Micrograd
         data: self.data + other.data,
         label: :"#{self.label}+#{other.label}",
         operation: :+,
-        previous: [self, other]
-      ).tap do |value|
-        value._backward = lambda do
+        previous: [self, other],
+        _backward: lambda do |value|
           self.with_grad(value.grad)
           other.with_grad(value.grad)
         end
-      end
+      )
     end
 
     def -(other)
@@ -60,13 +57,12 @@ module Micrograd
         data: self.data * other.data,
         label: :"#{self.label}*#{other.label}",
         operation: :*,
-        previous: [self, other]
-      ).tap do |value|
-        value._backward = lambda {
+        previous: [self, other],
+        _backward: lambda do |value|
           self.with_grad(other.data * value.grad)
           other.with_grad(self.data * value.grad)
-        }
-      end
+        end
+      )
     end
 
     def /(other)
@@ -82,12 +78,11 @@ module Micrograd
         data: self.data ** pow,
         label: :"#{self.label}**#{pow}",
         operation: :**,
-        previous: [self]
-      ).tap do |value|
-        value._backward = lambda do
+        previous: [self],
+        _backward: lambda do |value|
           self.with_grad(value.grad * pow * (self.data ** (pow - 1)))
         end
-      end
+      )
     end
 
     def tanh
@@ -99,12 +94,11 @@ module Micrograd
         data: t,
         label: :"tanh(#{self.label})",
         operation: :tanh,
-        previous: [self]
-      ).tap do |value|
-        value._backward = lambda do
+        previous: [self],
+        _backward: lambda do |value|
           self.with_grad(value.grad * (1 - (t ** 2)))
         end
-      end
+      )
     end
 
     def exp
@@ -112,12 +106,11 @@ module Micrograd
         data: Math.exp(self.data),
         label: :"exp(#{self.label})",
         operation: :exp,
-        previous: [self]
-      ).tap do |value|
-        value._backward = lambda do
+        previous: [self],
+        _backward: lambda do |value|
           self.with_grad(value.grad * value.data)
         end
-      end
+      )
     end
 
     def with_label(new_label)
@@ -137,7 +130,7 @@ module Micrograd
 
     def backward
       @grad = 1
-      Micrograd::TopoSort.new(self).call.reverse.map(&:_backward).map(&:call)
+      Micrograd::TopoSort.new(self).call.reverse.map { |node| node._backward.call(node) }
     end
 
     def coerce(other)
