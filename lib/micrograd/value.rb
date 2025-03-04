@@ -129,7 +129,7 @@ module Micrograd
     end
 
     def backward
-      @grad = 1
+      with_grad(1)
       Micrograd::TopoSort.new(self).call.reverse.map { |node| node._backward.call(node) }
     end
 
