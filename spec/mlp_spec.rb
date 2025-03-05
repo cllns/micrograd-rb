@@ -4,11 +4,20 @@ require "spec_helper"
 require "micrograd/mlp"
 
 RSpec.describe Micrograd::MLP do
-  subject { Micrograd::MLP.new(3, [4, 4, 1]) }
+  let(:random) { Random.new(RSpec.configuration.seed) }
 
-  it do
+  subject { Micrograd::MLP.new(3, [4, 4, 1], random:) }
+
+  it "returns value within expected range of -1 to 1" do
     x = [2.0, 3.0, -1.0]
     expect(subject.call(x).data).to be_within(1).of(0)
+  end
+
+  it "is deterministic when passing specific seed in" do
+    x = [2.0, 3.0, -1.0]
+    expect(
+      described_class.new(3, [4, 4, 1], random: Random.new(123)).call(x).data
+    ).to eq(-0.7514151822609686)
   end
 
   it "has reader for layers" do

@@ -6,9 +6,11 @@ module Micrograd
   class MLP
     attr_reader :layers
 
-    def initialize(n_in, n_outs)
+    def initialize(n_in, n_outs, random: Random.new)
       size = [n_in] + n_outs
-      @layers = n_outs.length.times.map { |i| Layer.new(size[i], size[i + 1]) }
+      @layers = n_outs.length.times.map do |i|
+        Layer.new(size[i], size[i + 1], random:)
+      end
     end
 
     def call(input)

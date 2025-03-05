@@ -14,10 +14,6 @@ RSpec.configure do |config|
   end
 
   config.order = :random
-
-  config.before(:suite) do
-    srand(RSpec.configuration.seed)
-  end
 end
 
 RSpec::Matchers.define :be_close_to do |expected|

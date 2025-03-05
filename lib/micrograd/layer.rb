@@ -6,8 +6,8 @@ module Micrograd
   class Layer
     attr_reader :neurons
 
-    def initialize(n_in, n_out)
-      @neurons = n_out.times.map { Neuron.new(n_in) }
+    def initialize(n_in, n_out, random: Random.new)
+      @neurons = n_out.times.map { Neuron.new(n_in, random:) }
     end
 
     def call(x)
