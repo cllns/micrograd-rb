@@ -13,8 +13,10 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.order = :random
+
   config.before(:suite) do
-    srand(123456789)
+    srand(RSpec.configuration.seed)
   end
 end
 

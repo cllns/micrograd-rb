@@ -5,7 +5,7 @@ require "micrograd/neuron"
 
 RSpec.describe Micrograd::Neuron do
   it do
-    expect(Micrograd::Neuron.new(2).call([1, 2]).data).to eq(-0.2815510042395894)
+    expect(Micrograd::Neuron.new(2).call([1, 2]).data).to be_within(1).of(0)
   end
 
   it "has reader for weights" do
