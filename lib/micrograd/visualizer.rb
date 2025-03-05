@@ -12,18 +12,18 @@ module Micrograd
     end
 
     def build_graph(node, nodes = {}, edges = [])
-      return [nodes, edges] if nodes.key?(node.label)
+      return [nodes, edges] if nodes.key?(node.id)
 
-      new_nodes = nodes.merge(node.label => node)
-      new_edges = edges + node.previous.map { |prev| [prev.label, node.label, node.operation] }
+      new_nodes = nodes.merge(node.id => node)
+      new_edges = edges + node.previous.map { |prev| [prev.id, node.id, node.operation] }
       node.previous.reduce([new_nodes, new_edges]) { |acc, prev| build_graph(prev, *acc) }
     end
 
     def to_d2
       nodes, edges = build_graph(node)
       d2_representation = "direction: right\n"
-      d2_representation += nodes.map do |label, node|
-        %("#{label}": "#{label}: #{round(node.data)}\\ngrad: #{round(node.grad) || 'nil'}"\n)
+      d2_representation += nodes.map do |node_id, node|
+        %("#{node_id}": "#{node.label}: #{round(node.data)}\\ngrad: #{round(node.grad) || 'nil'}"\n)
       end.join
       d2_representation += edges.map { |from, to, op| %(#{from} -> "#{to}": #{op}\n) }.join
       d2_representation
@@ -31,7 +31,8 @@ module Micrograd
 
     def generate_image
       File.write("graph.d2", to_d2)
-      Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
+      _, err, status = Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
+      raise "Error: #{err}" unless status.success?
     end
 
     def round(float)

@@ -6,7 +6,7 @@ module Micrograd
   class Value
     attr_reader :data, :label, :grad, :_backward, :operation, :previous
 
-    def initialize(data:, label:, operation: nil, previous: [], _backward: -> (_) {})
+    def initialize(data:, label: nil, operation: nil, previous: [], _backward: -> (_) {})
       @data = data
       @label = label
       @operation = operation
@@ -30,12 +30,11 @@ module Micrograd
 
     def +(other)
       unless other.is_a?(Value)
-        other = Value[:"scalar_#{other}" => other]
+        other = Value[scalar: other]
       end
 
       Value.new(
         data: self.data + other.data,
-        label: :"#{self.label}+#{other.label}",
         operation: :+,
         previous: [self, other],
         _backward: lambda do |value|
@@ -43,6 +42,10 @@ module Micrograd
           other.with_grad(value.grad)
         end
       )
+    end
+
+    def id
+      self.object_id
     end
 
     def -(other)
@@ -55,12 +58,11 @@ module Micrograd
 
     def *(other)
       unless other.is_a?(Value)
-        other = Value[:"scalar_#{other}" => other]
+        other = Value[scalar: other]
       end
 
       Value.new(
         data: self.data * other.data,
-        label: :"#{self.label}*#{other.label}",
         operation: :*,
         previous: [self, other],
         _backward: lambda do |value|
@@ -81,7 +83,6 @@ module Micrograd
 
       Value.new(
         data: self.data ** pow,
-        label: :"#{self.label}**#{pow}",
         operation: :**,
         previous: [self],
         _backward: lambda do |value|
@@ -97,7 +98,6 @@ module Micrograd
       # (Math.exp(self.data) - Math.exp(-self.data)) / (Math.exp(self.data) + Math.exp(-self.data))
       Value.new(
         data: t,
-        label: :"tanh(#{self.label})",
         operation: :tanh,
         previous: [self],
         _backward: lambda do |value|
@@ -109,7 +109,6 @@ module Micrograd
     def exp
       Value.new(
         data: Math.exp(self.data),
-        label: :"exp(#{self.label})",
         operation: :exp,
         previous: [self],
         _backward: lambda do |value|
@@ -140,7 +139,7 @@ module Micrograd
 
     def coerce(other)
       if other.is_a?(Numeric)
-        [Value[:"scalar_#{other}" => other], self]
+        [Value[scalar: other], self]
       else
         raise TypeError.new("Cannot coerce #{other.class} into Value")
       end

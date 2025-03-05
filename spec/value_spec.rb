@@ -42,7 +42,7 @@ RSpec.describe Micrograd::Value do
       b = Micrograd::Value[b: 2]
       value = a + b
       expect(value.data).to eq(3)
-      expect(value.label).to eq(:"a+b")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:+)
       expect(value.previous).to eq(Set[a, b])
     end
@@ -52,7 +52,7 @@ RSpec.describe Micrograd::Value do
       b = Micrograd::Value[b: 2]
       value = a - b
       expect(value.data).to eq(-1)
-      expect(value.label).to eq(:"a+b*scalar_-1")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:+)
       # Skipping #previous test because it's two operations chained together
     end
@@ -62,7 +62,7 @@ RSpec.describe Micrograd::Value do
       b = Micrograd::Value[b: 3]
       value = a * b
       expect(value.data).to eq(6)
-      expect(value.label).to eq(:"a*b")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:*)
       expect(value.previous).to eq(Set[a, b])
     end
@@ -72,8 +72,7 @@ RSpec.describe Micrograd::Value do
       b = Micrograd::Value[b: 3]
       value = a / b
       expect(value.data).to eq(2)
-      # This is weird but due to how we handle division
-      expect(value.label).to eq(:"a*b**-1")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:*)
       # Skipping #previous test because it's two operations chained together
     end
@@ -82,7 +81,7 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 2]
       value = a ** 3
       expect(value.data).to eq(8)
-      expect(value.label).to eq(:"a**3")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:**)
       expect(value.previous).to eq(Set[a])
     end
@@ -91,7 +90,7 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 1]
       value = a.tanh
       expect(value.data).to eq(0.7615941559557649)
-      expect(value.label).to eq(:"tanh(a)")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:tanh)
       expect(value.previous).to eq(Set[a])
     end
@@ -100,7 +99,7 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 2]
       value = a.exp
       expect(value.data).to be_close_to(7.389)
-      expect(value.label).to eq(:"exp(a)")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:exp)
       expect(value.previous).to eq(Set[a])
     end
@@ -109,7 +108,7 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 2]
       value = -a
       expect(value.data).to eq(-2)
-      expect(value.label).to eq(:"a*scalar_-1")
+      expect(value.label).to be_nil
       expect(value.operation).to eq(:*)
       # Skipping #previous test because it's two operations chained together
     end
@@ -191,8 +190,8 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 1]
       value = a + 2
       expect(value.data).to eq(3)
-      expect(value.label).to eq(:"a+scalar_2")
-      expect(value.previous.map(&:label)).to include(:scalar_2)
+      expect(value.label).to be_nil
+      expect(value.previous.map(&:label)).to include(:scalar)
       expect(value.previous.map(&:data)).to include(2)
     end
 
@@ -200,8 +199,8 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 1]
       value = a * 3
       expect(value.data).to eq(3)
-      expect(value.label).to eq(:"a*scalar_3")
-      expect(value.previous.map(&:label)).to include(:scalar_3)
+      expect(value.label).to be_nil
+      expect(value.previous.map(&:label)).to include(:scalar)
       expect(value.previous.map(&:data)).to include(3)
     end
 
@@ -209,8 +208,8 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 1]
       value = 2 + a
       expect(value.data).to eq(3)
-      expect(value.label).to eq(:"scalar_2+a")
-      expect(value.previous.map(&:label)).to include(:scalar_2)
+      expect(value.label).to be_nil
+      expect(value.previous.map(&:label)).to include(:scalar)
       expect(value.previous.map(&:data)).to include(2)
     end
 
@@ -218,8 +217,8 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 1]
       value = 3 * a
       expect(value.data).to eq(3)
-      expect(value.label).to eq(:"scalar_3*a")
-      expect(value.previous.map(&:label)).to include(:scalar_3)
+      expect(value.label).to be_nil
+      expect(value.previous.map(&:label)).to include(:scalar)
       expect(value.previous.map(&:data)).to include(3)
     end
   end
