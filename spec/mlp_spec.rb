@@ -25,6 +25,10 @@ RSpec.describe Micrograd::MLP do
     )
   end
 
+  it "has 41 parameters" do
+    expect(subject.parameters.length).to eq(41)
+  end
+
   describe "a tiny dataset" do
     # Example from: https://youtu.be/VMj-3S1tku0?feature=shared&t=6664
 
