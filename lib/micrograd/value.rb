@@ -6,6 +6,8 @@ module Micrograd
   class Value
     attr_reader :data, :label, :grad, :_backward, :operation, :previous
 
+    attr_writer :data
+
     def initialize(data:, label: nil, operation: nil, previous: [], _backward: -> (_) {})
       @data = data
       @label = label

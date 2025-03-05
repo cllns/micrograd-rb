@@ -6,11 +6,11 @@ require "micrograd/mlp"
 RSpec.describe Micrograd::MLP do
   let(:random) { Random.new(RSpec.configuration.seed) }
 
-  subject { Micrograd::MLP.new(3, [4, 4, 1], random:) }
+  subject(:mlp) { Micrograd::MLP.new(3, [4, 4, 1], random:) }
 
   it "returns value within expected range of -1 to 1" do
     x = [2.0, 3.0, -1.0]
-    expect(subject.call(x).data).to be_within(1).of(0)
+    expect(mlp.call(x).data).to be_within(1).of(0)
   end
 
   it "is deterministic when passing specific seed in" do
@@ -21,21 +21,21 @@ RSpec.describe Micrograd::MLP do
   end
 
   it "has reader for layers" do
-    expect(subject.layers).to_not be_empty
+    expect(mlp.layers).to_not be_empty
   end
 
   it "has parameters" do
-    expect(subject.parameters).to eq(
+    expect(mlp.parameters).to eq(
       [
-        subject.layers[0].parameters,
-        subject.layers[1].parameters,
-        subject.layers[2].parameters,
+        mlp.layers[0].parameters,
+        mlp.layers[1].parameters,
+        mlp.layers[2].parameters,
       ].flatten
     )
   end
 
   it "has 41 parameters" do
-    expect(subject.parameters.length).to eq(41)
+    expect(mlp.parameters.length).to eq(41)
   end
 
   describe "a tiny dataset" do
@@ -54,12 +54,12 @@ RSpec.describe Micrograd::MLP do
       [1.0, -1.0, -1.0, 1.0]
     end
 
-    let(:random) { Random.new(12345678) }
-    # Gives us a loss of 5.2, which is close to his example of 4.8
+    let(:random) { Random.new(11111) }
+    # Gives us loss, first grad and first data that are on the same sides of 0
     # https://youtu.be/VMj-3S1tku0?feature=shared&t=7282
 
     it do
-      outputs = inputs.map { |input| subject.call(input) }
+      outputs = inputs.map { |input| mlp.call(input) }
 
       loss = targets.zip(outputs).map do |target, output|
         (output - target) ** 2
@@ -67,7 +67,25 @@ RSpec.describe Micrograd::MLP do
 
       loss.backward
 
+      p "Loss #{loss.inspect}"
+
       p mlp.layers.first.neurons.first.weights.first.grad
+      p mlp.layers.first.neurons.first.weights.first.data
+
+      mlp.parameters.each do |parameter|
+        parameter.data += -0.01 * parameter.grad
+      end
+
+      outputs = inputs.map { |input| mlp.call(input) }
+      loss = targets.zip(outputs).map do |target, output|
+        (output - target) ** 2
+      end.sum
+      loss.backward
+
+      p "Loss #{loss.inspect}"
+
+      p mlp.layers.first.neurons.first.weights.first.grad
+      p mlp.layers.first.neurons.first.weights.first.data
     end
   end
 end
