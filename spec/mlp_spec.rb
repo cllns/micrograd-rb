@@ -67,13 +67,15 @@ RSpec.describe Micrograd::MLP do
 
       20.times do |i|
         mlp.parameters.each do |parameter|
-          parameter.data += -0.05 * parameter.grad
+          parameter.data += -0.1 * parameter.grad
         end
 
         outputs = inputs.map { |input| mlp.call(input) }
         loss = targets.zip(outputs).map do |target, output|
           (output - target) ** 2
         end.sum
+
+        mlp.parameters.each { |parameter| parameter.zero_grad! }
         loss.backward
 
         puts "#{i + 1}: #{loss.inspect}"

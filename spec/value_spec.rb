@@ -234,4 +234,12 @@ RSpec.describe Micrograd::Value do
       expect(a.inspect).to eq("Value[data: 1, label: :a]")
     end
   end
+
+  it "has zero_grad!" do
+    a = Micrograd::Value[a: 1]
+    a.with_grad(0.5)
+    expect(a.grad).to eq(0.5)
+    a.zero_grad!
+    expect(a.grad).to eq(0)
+  end
 end

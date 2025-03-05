@@ -136,6 +136,10 @@ module Micrograd
       self
     end
 
+    def zero_grad!
+      @grad = 0.0
+    end
+
     def generate_image
       Visualizer.new(self).generate_image
     end
