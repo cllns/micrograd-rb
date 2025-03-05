@@ -12,6 +12,10 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.before(:suite) do
+    srand(123456789)
+  end
 end
 
 RSpec::Matchers.define :be_close_to do |expected|

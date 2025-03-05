@@ -11,10 +11,7 @@ module Micrograd
 
     def call(input)
       @layers.each { |layer| input = layer.call(input) }
+      input
     end
   end
 end
-
-x = [2.0, 3.0, -1.0]
-n = Micrograd::MLP.new(3, [4, 4, 1])
-p n.call(x)
