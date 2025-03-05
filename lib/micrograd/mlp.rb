@@ -10,8 +10,7 @@ module Micrograd
     end
 
     def call(input)
-      @layers.each { |layer| input = layer.call(input) }
-      input
+      @layers.inject(input) { |input, layer| layer.call(input) }
     end
   end
 end
