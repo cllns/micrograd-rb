@@ -88,6 +88,8 @@ RSpec.describe Micrograd::MLP do
         p mlp.layers.first.neurons.first.weights.first.grad
         p mlp.layers.first.neurons.first.weights.first.data
       end
+
+      p outputs
     end
   end
 end
