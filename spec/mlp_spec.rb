@@ -54,10 +54,6 @@ RSpec.describe Micrograd::MLP do
       [1.0, -1.0, -1.0, 1.0]
     end
 
-    let(:random) { Random.new(11111) }
-    # Gives us loss, first grad and first data that are on the same sides of 0
-    # https://youtu.be/VMj-3S1tku0?feature=shared&t=7282
-
     it do
       outputs = inputs.map { |input| mlp.call(input) }
 
@@ -67,14 +63,11 @@ RSpec.describe Micrograd::MLP do
 
       loss.backward
 
-      p "Loss #{loss.inspect}"
+      puts "0: #{loss.inspect}"
 
-      p mlp.layers.first.neurons.first.weights.first.grad
-      p mlp.layers.first.neurons.first.weights.first.data
-
-      50.times do
+      20.times do |i|
         mlp.parameters.each do |parameter|
-          parameter.data += -0.01 * parameter.grad
+          parameter.data += -0.05 * parameter.grad
         end
 
         outputs = inputs.map { |input| mlp.call(input) }
@@ -83,13 +76,10 @@ RSpec.describe Micrograd::MLP do
         end.sum
         loss.backward
 
-        p "Loss #{loss.inspect}"
-
-        p mlp.layers.first.neurons.first.weights.first.grad
-        p mlp.layers.first.neurons.first.weights.first.data
+        puts "#{i + 1}: #{loss.inspect}"
       end
 
-      p outputs
+      puts outputs.map(&:data)
     end
   end
 end
