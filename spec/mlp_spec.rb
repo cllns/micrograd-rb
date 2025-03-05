@@ -54,6 +54,10 @@ RSpec.describe Micrograd::MLP do
       [1.0, -1.0, -1.0, 1.0]
     end
 
+    let(:random) { Random.new(12345678) }
+    # Gives us a loss of 5.2, which is close to his example of 4.8
+    # https://youtu.be/VMj-3S1tku0?feature=shared&t=7282
+
     it do
       outputs = inputs.map { |input| subject.call(input) }
 
@@ -63,7 +67,7 @@ RSpec.describe Micrograd::MLP do
 
       loss.backward
 
-      p subject.layers.first.neurons.first.weights.first.grad
+      p mlp.layers.first.neurons.first.weights.first.grad
     end
   end
 end
