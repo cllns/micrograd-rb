@@ -222,4 +222,39 @@ RSpec.describe Micrograd::Value do
       expect(value.previous.map(&:data)).to include(3)
     end
   end
+
+  describe "#inspect" do
+    it "shows just the data" do
+      a = Micrograd::Value[1]
+      expect(a.inspect).to eq("Value[data: 1]")
+    end
+
+    it "shows label and data" do
+      a = Micrograd::Value[a: 1]
+      expect(a.inspect).to eq("Value[data: 1, label: :a]")
+    end
+
+    it "shows data, operation, and single previous value" do
+      a = Micrograd::Value[a: 1]
+      b = a + a
+      expect(b.inspect).to eq("Value[data: 2, operation: :+, previous: (1)]")
+    end
+
+    it "shows label, data, and multiple previous values" do
+      a = Micrograd::Value[a: 1]
+      b = Micrograd::Value[b: 2]
+      c = a + b
+      expect(c.inspect).to eq("Value[data: 3, operation: :+, previous: (1, 2)]")
+    end
+
+    it "shows data, operation, grad, and previous and previous grads" do
+      a = Micrograd::Value[a: 1]
+      b = Micrograd::Value[b: 2]
+      c = a * b
+      c.backward
+      expect(c.inspect).to eq("Value[data: 2, operation: :*, grad: 1.0, previous: (1, 2)]")
+      expect(a.inspect).to eq("Value[data: 1, label: :a, grad: 2.0]")
+      expect(b.inspect).to eq("Value[data: 2, label: :b, grad: 1.0]")
+    end
+  end
 end

@@ -28,6 +28,28 @@ module Micrograd
       new(label:, data:)
     end
 
+    def id
+      self.object_id
+    end
+
+    def inspect
+      previous_datas = if previous.empty?
+        nil
+      else
+        # Just the values, surrounded by parens so it can't be confused for an array
+        "(#{previous.map(&:data).join(', ')})"
+      end
+      present_values = {
+        data:,
+        label:,
+        operation:,
+        grad:,
+        previous: previous_datas,
+      }.compact
+
+      "Value[#{present_values.map { |k, v| "#{k}: #{v.is_a?(String) ? v : v.inspect}" }.join(', ')}]"
+    end
+
     def +(other)
       unless other.is_a?(Value)
         other = Value[scalar: other]
@@ -42,10 +64,6 @@ module Micrograd
           other.with_grad(value.grad)
         end
       )
-    end
-
-    def id
-      self.object_id
     end
 
     def -(other)
