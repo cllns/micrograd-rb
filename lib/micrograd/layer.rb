@@ -4,12 +4,17 @@ require_relative "neuron"
 
 module Micrograd
   class Layer
-    def initialize(nin, nout)
-      @neurons = nout.times.map { Neuron.new(nin) }
+    def initialize(n_in, n_out)
+      @neurons = n_out.times.map { Neuron.new(n_in) }
     end
 
     def call(x)
-      @neurons.map { |neuron| neuron.call(x) }
+      outs = @neurons.map { |neuron| neuron.call(x) }
+      if outs.length == 1
+        outs.first
+      else
+        outs
+      end
     end
   end
 end

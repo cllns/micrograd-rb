@@ -4,13 +4,13 @@ require_relative "value"
 
 module Micrograd
   class Neuron
-    def initialize(nin)
-      @w = nin.times.map { Value[rand => rand(-1.0..1)] }
-      @b = Value[rand => rand(-1.0..1)]
+    def initialize(n_in)
+      @weights = n_in.times.map { Value[rand => rand(-1.0..1)] }
+      @bias = Value[rand => rand(-1.0..1)]
     end
 
-    def call(x)
-      act = @w.zip(x).map { |w_, x_| w_ * x_ }.sum + @b
+    def call(inputs)
+      act = @weights.zip(inputs).map { |weight, input| weight * input }.sum + @bias
       act.tanh
     end
   end

@@ -119,7 +119,7 @@ module Micrograd
     end
 
     def with_grad(grad)
-      @grad ||= 0
+      @grad ||= 0.0
       @grad += grad
       self
     end
