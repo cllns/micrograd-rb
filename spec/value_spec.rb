@@ -23,10 +23,16 @@ RSpec.describe Micrograd::Value do
       expect(value.previous).to eq(Set[previous1, previous2])
     end
 
-    it "supports bracket short-hand constructor" do
+    it "supports bracket short-hand constructor with value" do
       value = Micrograd::Value[a: 123]
       expect(value.data).to eq(123)
       expect(value.label).to eq(:a)
+    end
+
+    it "supports bracket short-hand constructor without value" do
+      value = Micrograd::Value[123]
+      expect(value.data).to eq(123)
+      expect(value.label).to be_nil
     end
   end
 

@@ -16,10 +16,15 @@ module Micrograd
       @grad = nil
     end
 
-    def self.[](**input)
-      raise ArgumentError.new("Expected a single key-value pair") unless input.size == 1
-
-      label, data = input.first
+    def self.[](*args, **kwargs)
+      if args.size == 1
+        label = nil
+        data = args.first
+      elsif kwargs.size == 1
+        label, data = kwargs.first
+      else
+        raise ArgumentError.new("Provide data or label: data as arg")
+      end
       new(label:, data:)
     end
 
