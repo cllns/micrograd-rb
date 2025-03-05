@@ -15,5 +15,9 @@ module Micrograd
       act = weights.zip(inputs).map { |weight, input| weight * input }.sum + bias
       act.tanh
     end
+
+    def parameters
+      weights + [bias]
+    end
   end
 end

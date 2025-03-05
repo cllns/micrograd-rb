@@ -14,5 +14,9 @@ module Micrograd
     def call(input)
       layers.inject(input) { |input, layer| layer.call(input) }
     end
+
+    def parameters
+      layers.flat_map(&:parameters)
+    end
   end
 end

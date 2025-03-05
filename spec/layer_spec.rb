@@ -14,4 +14,12 @@ RSpec.describe Micrograd::Layer do
     layer = Micrograd::Layer.new(3, 2)
     expect(layer.neurons).to_not be_empty
   end
+
+  it "has parameters" do
+    layer = Micrograd::Layer.new(3, 2)
+
+    expect(layer.parameters).to eq(
+      [layer.neurons[0].parameters, layer.neurons[1].parameters].flatten
+    )
+  end
 end

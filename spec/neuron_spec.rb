@@ -17,4 +17,9 @@ RSpec.describe Micrograd::Neuron do
     neuron = Micrograd::Neuron.new(2)
     expect(neuron.bias).to_not be_nil
   end
+
+  it "has parameters" do
+    neuron = Micrograd::Neuron.new(2)
+    expect(neuron.parameters).to eq(neuron.weights + [neuron.bias])
+  end
 end

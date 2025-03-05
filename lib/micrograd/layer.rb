@@ -18,5 +18,9 @@ module Micrograd
         outs
       end
     end
+
+    def parameters
+      neurons.flat_map(&:parameters)
+    end
   end
 end
