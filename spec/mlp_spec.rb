@@ -41,16 +41,20 @@ RSpec.describe Micrograd::MLP do
   describe "a tiny dataset" do
     # Example from: https://youtu.be/VMj-3S1tku0?feature=shared&t=6664
 
-    it do
-      inputs = [
+    let(:inputs) do
+      [
         [2.0, 3.0, -1.0],
         [3.0, -1.0, 0.5],
         [0.5, 1.0, 1.0],
         [1.0, 1.0, -1.0],
       ]
+    end
 
-      targets = [1.0, -1.0, -1.0, 1.0]
+    let(:targets) do
+      [1.0, -1.0, -1.0, 1.0]
+    end
 
+    it do
       outputs = inputs.map { |input| subject.call(input) }
 
       loss = targets.zip(outputs).map do |target, output|
