@@ -33,21 +33,8 @@ module Micrograd
     end
 
     def inspect
-      previous_datas = if previous.empty?
-        nil
-      else
-        # Just the values, surrounded by parens so it can't be confused for an array
-        "(#{previous.map(&:data).join(', ')})"
-      end
-      present_values = {
-        data:,
-        label:,
-        operation:,
-        grad:,
-        previous: previous_datas,
-      }.compact
-
-      "Value[#{present_values.map { |k, v| "#{k}: #{v.is_a?(String) ? v : v.inspect}" }.join(', ')}]"
+      label = self.label.nil? ? "" : ", label: #{self.label.inspect}"
+      "Value[data: #{data}#{label}]"
     end
 
     def +(other)
