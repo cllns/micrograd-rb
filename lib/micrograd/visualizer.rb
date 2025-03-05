@@ -30,6 +30,7 @@ module Micrograd
     end
 
     def generate_image
+      # TODO: Provide some way to write to a tmp file, so tests don't overwrite it
       File.write("graph.d2", to_d2)
       _, err, status = Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
       raise "Error: #{err}" unless status.success?
