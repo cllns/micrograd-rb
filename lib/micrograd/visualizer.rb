@@ -23,7 +23,12 @@ module Micrograd
       nodes, edges = build_graph(node)
       d2_representation = "direction: right\n"
       d2_representation += nodes.map do |node_id, node|
-        %("#{node_id}": "#{node.label || node.operation}: #{round(node.data)}\\ngrad: #{round(node.grad) || 'nil'}"\n)
+        label_or_operation = node.label || node.operation
+        rounded_data = round(node.data)
+        grad_line = "grad: #{round(node.grad)}" if node.grad
+        data_line = [label_or_operation, rounded_data].compact.join(": ")
+        contents = [data_line, grad_line].compact.join("\\n")
+        %("#{node_id}": #{contents}\n)
       end.join
       d2_representation += edges.map { |from, to, op| %(#{from} -> "#{to}": #{op}\n) }.join
       d2_representation
@@ -37,11 +42,7 @@ module Micrograd
     end
 
     def round(float)
-      if float.nil?
-        "nil"
-      else
-        format("%.4f", float)
-      end
+      format("%.4f", float)
     end
   end
 end
