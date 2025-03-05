@@ -72,20 +72,22 @@ RSpec.describe Micrograd::MLP do
       p mlp.layers.first.neurons.first.weights.first.grad
       p mlp.layers.first.neurons.first.weights.first.data
 
-      mlp.parameters.each do |parameter|
-        parameter.data += -0.01 * parameter.grad
+      50.times do
+        mlp.parameters.each do |parameter|
+          parameter.data += -0.01 * parameter.grad
+        end
+
+        outputs = inputs.map { |input| mlp.call(input) }
+        loss = targets.zip(outputs).map do |target, output|
+          (output - target) ** 2
+        end.sum
+        loss.backward
+
+        p "Loss #{loss.inspect}"
+
+        p mlp.layers.first.neurons.first.weights.first.grad
+        p mlp.layers.first.neurons.first.weights.first.data
       end
-
-      outputs = inputs.map { |input| mlp.call(input) }
-      loss = targets.zip(outputs).map do |target, output|
-        (output - target) ** 2
-      end.sum
-      loss.backward
-
-      p "Loss #{loss.inspect}"
-
-      p mlp.layers.first.neurons.first.weights.first.grad
-      p mlp.layers.first.neurons.first.weights.first.data
     end
   end
 end
