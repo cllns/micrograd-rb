@@ -83,6 +83,7 @@ module Micrograd
 
       Value.new(
         data: self.data ** pow,
+        label: :"**#{pow}",
         operation: :**,
         previous: [self],
         _backward: lambda do |value|

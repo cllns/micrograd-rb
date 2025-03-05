@@ -81,7 +81,7 @@ RSpec.describe Micrograd::Value do
       a = Micrograd::Value[a: 2]
       value = a ** 3
       expect(value.data).to eq(8)
-      expect(value.label).to be_nil
+      expect(value.label).to eq(:"**3")
       expect(value.operation).to eq(:**)
       expect(value.previous).to eq(Set[a])
     end
