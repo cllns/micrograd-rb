@@ -20,5 +20,9 @@ module Micrograd
     def parameters
       layers.flat_map(&:parameters)
     end
+
+    def zero_grad!
+      parameters.each(&:zero_grad!)
+    end
   end
 end

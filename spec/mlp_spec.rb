@@ -38,6 +38,12 @@ RSpec.describe Micrograd::MLP do
     expect(mlp.parameters.length).to eq(41)
   end
 
+  it "has zero_grad!" do
+    expect(mlp.parameters.map(&:grad)).to all(be_nil)
+    mlp.parameters.each(&:zero_grad!)
+    expect(mlp.parameters.map(&:grad)).to all(eq(0))
+  end
+
   describe "a tiny dataset" do
     # Example from: https://youtu.be/VMj-3S1tku0?feature=shared&t=6664
 
@@ -75,7 +81,7 @@ RSpec.describe Micrograd::MLP do
           (output - target) ** 2
         end.sum
 
-        mlp.parameters.each(&:zero_grad!)
+        mlp.zero_grad!
         loss.backward
 
         puts "#{i + 1}: #{loss.inspect}"
