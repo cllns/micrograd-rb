@@ -14,7 +14,7 @@ module Micrograd
     end
 
     def call(input)
-      layers.inject(input) { |input, layer| layer.call(input) }
+      layers.reduce(input) { |input, layer| layer.call(input) }
     end
 
     def parameters

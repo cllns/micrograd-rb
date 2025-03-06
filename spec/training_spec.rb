@@ -35,7 +35,7 @@ RSpec.describe Micrograd::Training do
     end
 
     it do
-      p training.call(epochs: 20, learning_rate: 0.05, verbose: true)
+      p training.call(epochs: 20, learning_rate: 0.1, verbose: true)
     end
   end
 end
