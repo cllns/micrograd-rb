@@ -75,7 +75,7 @@ RSpec.describe Micrograd::MLP do
           (output - target) ** 2
         end.sum
 
-        mlp.parameters.each { |parameter| parameter.zero_grad! }
+        mlp.parameters.each(&:zero_grad!)
         loss.backward
 
         puts "#{i + 1}: #{loss.inspect}"
