@@ -60,6 +60,7 @@ RSpec.describe Micrograd::MLP do
       [1.0, -1.0, -1.0, 1.0]
     end
 
+    # Since extracted into Micrograd::Training, but keeping for posterity
     it do
       outputs = inputs.map { |input| mlp.call(input) }
 

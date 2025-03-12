@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# frozen_string_literal
-
 require "spec_helper"
+require "micrograd/training"
 
 RSpec.describe Micrograd::Training do
   let(:random) { Random.new(12345) }

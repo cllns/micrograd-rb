@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "micrograd/value"
 
 RSpec.describe Micrograd::Value do
   describe "constructors" do

@@ -2,7 +2,6 @@
 
 require_relative "value"
 require_relative "visualizer"
-require_relative "topo_sort"
 
 module Micrograd
   class Examples

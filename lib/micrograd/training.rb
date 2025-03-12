@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-# frozen_string_literal
-
-require "micrograd/value"
-require "micrograd/topo_sort"
-require "micrograd/mlp"
+require_relative "mlp"
 
 module Micrograd
   class Training
