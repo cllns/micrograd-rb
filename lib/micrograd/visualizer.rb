@@ -11,13 +11,14 @@ module Micrograd
       @output_file = output_file
     end
 
-    def build_graph(node, nodes = {}, edges = [])
-      return [nodes, edges] if nodes.key?(node.id)
-
-      new_nodes = nodes.merge(node.id => node)
-      new_edges = edges + node.previous.map { |prev| [prev.id, node.id, node.operation] }
-      node.previous.reduce([new_nodes, new_edges]) { |acc, prev| build_graph(prev, *acc) }
+    def generate_image
+      # TODO: Provide some way to write to a tmp file, so tests don't overwrite it
+      File.write("graph.d2", to_d2)
+      _, err, status = Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
+      raise "Error: #{err}" unless status.success?
     end
+
+    private
 
     def to_d2
       nodes, edges = build_graph(node)
@@ -34,11 +35,12 @@ module Micrograd
       d2_representation
     end
 
-    def generate_image
-      # TODO: Provide some way to write to a tmp file, so tests don't overwrite it
-      File.write("graph.d2", to_d2)
-      _, err, status = Open3.capture3("d2 graph.d2 --layout=elk #{output_file}")
-      raise "Error: #{err}" unless status.success?
+    def build_graph(node, nodes = {}, edges = [])
+      return [nodes, edges] if nodes.key?(node.id)
+
+      new_nodes = nodes.merge(node.id => node)
+      new_edges = edges + node.previous.map { |prev| [prev.id, node.id, node.operation] }
+      node.previous.reduce([new_nodes, new_edges]) { |acc, prev| build_graph(prev, *acc) }
     end
 
     def round(float)

@@ -12,7 +12,9 @@ RSpec.describe Micrograd::Visualizer do
           a = Micrograd::Value[a: 1]
           b = Micrograd::Value[b: 2]
           c = a + b
-          Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          expect {
+            Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          }.to_not raise_error
         end
 
         it "works with backward" do
@@ -20,7 +22,9 @@ RSpec.describe Micrograd::Visualizer do
           b = Micrograd::Value[b: 2]
           c = a + b
           c.backward
-          Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          expect {
+            Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          }
         end
       end
 
@@ -29,7 +33,9 @@ RSpec.describe Micrograd::Visualizer do
           a = Micrograd::Value[1]
           b = Micrograd::Value[2]
           c = a + b
-          Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          expect {
+            Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          }
         end
 
         it "works with backward" do
@@ -37,7 +43,9 @@ RSpec.describe Micrograd::Visualizer do
           b = Micrograd::Value[b: 2]
           c = a + b
           c.backward
-          Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          expect {
+            Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+          }
         end
       end
     end
@@ -54,7 +62,9 @@ RSpec.describe Micrograd::Visualizer do
         h = -g
         i = h.tanh
         i.backward
-        Micrograd::Visualizer.new(i, output_file: "/dev/null").generate_image
+        expect {
+          Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
+        }
       end
     end
   end
