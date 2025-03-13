@@ -147,7 +147,7 @@ module Micrograd
       Visualizer.new(self).generate_image
     end
 
-    def backward
+    def backward!
       add_grad(1)
       Micrograd::TopoSort.new(self).call.reverse.map { |node| node._backward.call(node) }
     end

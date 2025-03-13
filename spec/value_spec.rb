@@ -135,7 +135,7 @@ RSpec.describe Micrograd::Value do
     end
   end
 
-  describe "backward" do
+  describe "backward!" do
     it "calculates gradients for 2 sets of weights and inputs" do
       x1 = Micrograd::Value[x1: 2]
       x2 = Micrograd::Value[x2: 0]
@@ -145,7 +145,7 @@ RSpec.describe Micrograd::Value do
       x2w2 = (x2 * w2).with_label(:x2w2)
       x1w1x2w2 = (x1w1 + x2w2).with_label(:x1w1x2w2)
 
-      x1w1x2w2.backward
+      x1w1x2w2.backward!
       expect(x1.grad).to eq(-3)
       expect(w1.grad).to eq(2)
       expect(x2.grad).to eq(1)
@@ -164,7 +164,7 @@ RSpec.describe Micrograd::Value do
       b = Micrograd::Value[b: 6.8813735870195432]
       n = (x1w1x2w2 + b).with_label(:n)
       o = n.tanh.with_label(:o)
-      o.backward
+      o.backward!
       expect(x1.grad).to be_close_to(-1.5)
       expect(w1.grad).to be_close_to(1)
       expect(x2.grad).to be_close_to(0.5)
@@ -180,7 +180,7 @@ RSpec.describe Micrograd::Value do
     it "handles node being used multiple times" do
       a = Micrograd::Value[a: 2]
       value = (a + a).with_label(:double_a)
-      value.backward
+      value.backward!
 
       expect(a.grad).to eq(2)
     end
@@ -249,7 +249,7 @@ RSpec.describe Micrograd::Value do
   describe "#with_grad" do
     it "applies the gradient step" do
       a = Micrograd::Value[a: 1]
-      a.backward
+      a.backward!
       expect(a.data).to eq(1)
       expect(a.grad).to eq(1)
       a.gradient_step!(0.1)
@@ -261,7 +261,7 @@ RSpec.describe Micrograd::Value do
   describe "#gradient_step!" do
     it "applies the gradient step" do
       a = Micrograd::Value[a: 1]
-      a.backward
+      a.backward!
       expect(a.data).to eq(1)
       expect(a.grad).to eq(1)
       a.gradient_step!(0.1)

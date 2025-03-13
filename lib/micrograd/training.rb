@@ -31,7 +31,7 @@ module Micrograd
     def iterate!(i)
       outputs = forward_pass
       loss = calculate_loss(outputs)
-      loss.backward
+      loss.backward!
       puts "#{i}: #{loss.data}" if i
       outputs
     end

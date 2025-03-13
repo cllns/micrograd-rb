@@ -21,7 +21,7 @@ RSpec.describe Micrograd::Visualizer do
           a = Micrograd::Value[a: 1]
           b = Micrograd::Value[b: 2]
           c = a + b
-          c.backward
+          c.backward!
           expect {
             Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
           }
@@ -42,7 +42,7 @@ RSpec.describe Micrograd::Visualizer do
           a = Micrograd::Value[a: 1]
           b = Micrograd::Value[b: 2]
           c = a + b
-          c.backward
+          c.backward!
           expect {
             Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
           }
@@ -61,7 +61,7 @@ RSpec.describe Micrograd::Visualizer do
         g = f / 2
         h = -g
         i = h.tanh
-        i.backward
+        i.backward!
         expect {
           Micrograd::Visualizer.new(c, output_file: "/dev/null").generate_image
         }

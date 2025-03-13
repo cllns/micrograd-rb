@@ -68,7 +68,7 @@ RSpec.describe Micrograd::MLP do
         (output - target) ** 2
       end.sum
 
-      loss.backward
+      loss.backward!
 
       puts "0: #{loss.inspect}"
 
@@ -86,7 +86,7 @@ RSpec.describe Micrograd::MLP do
         end.sum
 
         mlp.zero_grad!
-        loss.backward
+        loss.backward!
 
         puts "#{i + 1}: #{loss.inspect}"
       end

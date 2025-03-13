@@ -23,7 +23,7 @@ module Micrograd
       e = (2 * n).exp
       o = (e - 1) / (e + 1)
 
-      o.backward
+      o.backward!
 
       @node = o
     end
