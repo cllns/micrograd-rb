@@ -1,16 +1,15 @@
-# Micrograd
+# Micrograd 🔴💎🧮📉
 
-This is an example implementation of a small neural network library in Ruby, with [automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) and [backpropagation](https://en.wikipedia.org/wiki/Backpropagation). If you have no clue what that means, check out [this video series](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi), which explains Neural Networks and Deep Learning visually, without math.
+This is an example implementation of a **small neural network library** in Ruby, with [automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) and [backpropagation](https://en.wikipedia.org/wiki/Backpropagation). If you have no clue what that means, check out [this video series](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi), which explains Neural Networks and Deep Learning visually, without math.
 
 I implemented this library by going through the YouTube lecture 
 [“The spelled-out intro to neural networks and backpropagation: building micrograd”](https://www.youtube.com/watch?v=VMj-3S1tku0&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ))
-by Andrej Karpathy. It's the first in a series called "Neural Networks: From Zero to Hero", which builds up from the basic building blocks all the way to implementing GPT-2.
+by Andrej Karpathy. It's the first in a series called "Neural Networks: From Zero to Hero", which builds up from the basic building blocks all the way to implementing GPT-2. As I watched the video, I translated the Python code into Ruby.
 
 There's a canonical implementation of the functionality implemented in Python, available as [micrograd](https://github.com/karpathy/micrograd).
-
-As I watched the video, I translated the Python code into Ruby.
-
-I didn't reference the `micrograd` codebase at all, nor any of the other micrograd implementations [in Ruby](https://github.com/search?utf8=%E2%9C%93&q=micrograd+language%3ARuby+&type=repositories), nor in any other languages.
+I didn't reference the `micrograd` codebase at all, 
+nor any of the other micrograd implementations [in Ruby](https://github.com/search?utf8=%E2%9C%93&q=micrograd+language%3ARuby+&type=repositories), 
+nor in any other languages.
 
 ### Motivation
 Why? Because I am learning neural networks & deep learning.
@@ -19,9 +18,12 @@ but (1) I didn't want to just write all the same code he wrote and (2) I learn b
 I know Ruby best (and enjoy writing it the most), so it was the obvious choice.
 
 ## Approach
-I implemented it in **idiomatic** Ruby:
-* I didn't just copy the Python and adapt the syntax directly
-* The backward method is called `Value#backward!`, since in Ruby we use that to signify that we're mutating the object in-place.
+I implemented it in **idiomatic** Ruby: I didn't just copy the Python and adapt the syntax directly
+* I used bang methods, e.g. `Value#backward!`, since in Ruby we use that to signify that we're mutating the object in-place.
+* I leveraged methods on Enumerable instead of using loops (since we don't have list comprehension in Ruby)
+* I used symbol keys, of course
+* I used keyword args in most cases
+* I extracted `Visualizer` and `TopoGraph` classes, instead of encapsulating that logic within `Value`.
 
 And, since it's Ruby, I also implemented it in an **idiosyncratic** way:
 * I added a bracket constructor (factory) syntax (e.g. `Micrograd::Value[scalar_value]`), since I was jealous of Python's terseness with no `.new` when creating Value objects.
