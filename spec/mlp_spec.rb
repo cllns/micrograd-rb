@@ -16,7 +16,7 @@ RSpec.describe Micrograd::MLP do
   it "is deterministic when passing specific seed in" do
     x = [2.0, 3.0, -1.0]
     expect(
-      described_class.new(3, [4, 4, 1], random: Random.new(123)).call(x).data
+      Micrograd::MLP.new(3, [4, 4, 1], random: Random.new(123)).call(x).data
     ).to eq(-0.7514151822609686)
   end
 
