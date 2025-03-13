@@ -11,6 +11,9 @@ I didn't reference the `micrograd` codebase at all,
 nor any of the other micrograd implementations [in Ruby](https://github.com/search?utf8=%E2%9C%93&q=micrograd+language%3ARuby+&type=repositories), 
 nor in any other languages.
 
+This is a fine codebase to learn from (though you should write it yourself). 
+If you're building anything real, you probably want to use [torch.rb](https://github.com/ankane/torch.rb), which is based on libtorch, the high-performance C++ library that powers PyTorch.
+
 ### Motivation
 Why? Because I am learning neural networks & deep learning.
 I know enough Python to have been able to write it in Python,
@@ -73,8 +76,6 @@ You're probably just curious and may read the code and specs here on GitHub.
 But if you want to mess around with the code, you can clone this repo.
 
 I don't see why you'd want to install this as a dependency, but you could do `gem "micrograd", github: "cllns/micrograd"` if you want.
-
-If you're building anything real, you probably want to use [torch.rb](https://github.com/ankane/torch.rb), which is based on libtorch, the high-performance C++ library that PyTorch uses.
 
 ## Usage
 Take a look at the specs and also `lib/micrograd/examples.rb` to see how to use this library.
