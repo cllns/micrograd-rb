@@ -4,7 +4,9 @@ require_relative "topo_sort"
 
 module Micrograd
   class Value
-    attr_reader :data, :label, :grad, :_backward, :operation, :previous
+    attr_reader :data, :label, :grad, :operation, :previous
+
+    protected attr_reader :_backward
 
     def initialize(data:, label: nil, operation: nil, previous: [], _backward: -> (_) {})
       @data = data
