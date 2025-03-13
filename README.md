@@ -1,4 +1,4 @@
-# Micrograd 🔴💎🧮📉
+# Micrograd 🧮💎📉
 
 This is an example implementation of a **small neural network library** in Ruby, with [automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) and [backpropagation](https://en.wikipedia.org/wiki/Backpropagation). If you have no clue what that means, check out [this video series](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi), which explains Neural Networks and Deep Learning visually, without math.
 
