@@ -74,7 +74,10 @@ RSpec.describe Micrograd::MLP do
 
       20.times do |i|
         mlp.parameters.each do |parameter|
-          parameter.data += -0.1 * parameter.grad
+          # Removed after removing Value's attr_writer for data
+          # parameter.data += -0.1 * parameter.grad
+          # Instead that functionality was integrated via Value#gradient_step!
+          parameter.gradient_step!(0.1)
         end
 
         outputs = inputs.map { |input| mlp.call(input) }

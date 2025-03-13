@@ -38,7 +38,7 @@ module Micrograd
 
     def gradient_descent!(learning_rate)
       mlp.parameters.each do |parameter|
-        parameter.data += -1 * learning_rate * parameter.grad
+        parameter.gradient_step!(learning_rate)
       end
     end
 

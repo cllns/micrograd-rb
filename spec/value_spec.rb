@@ -127,7 +127,7 @@ RSpec.describe Micrograd::Value do
       expect(value.previous).to eq(Set[a, b])
     end
 
-    it "allows re-assigning grad" do
+    it "allows adding grad" do
       a = Micrograd::Value[a: 2]
       b = Micrograd::Value[b: 3]
       value = (a * b).add_grad(1)
@@ -236,11 +236,37 @@ RSpec.describe Micrograd::Value do
     end
   end
 
-  it "has zero_grad!" do
-    a = Micrograd::Value[a: 1]
-    a.add_grad(0.5)
-    expect(a.grad).to eq(0.5)
-    a.zero_grad!
-    expect(a.grad).to eq(0)
+  describe "#zero_grad!" do
+    it "zeroes out grad" do
+      a = Micrograd::Value[a: 1]
+      a.add_grad(0.5)
+      expect(a.grad).to eq(0.5)
+      a.zero_grad!
+      expect(a.grad).to eq(0)
+    end
+  end
+
+  describe "#with_grad" do
+    it "applies the gradient step" do
+      a = Micrograd::Value[a: 1]
+      a.backward
+      expect(a.data).to eq(1)
+      expect(a.grad).to eq(1)
+      a.gradient_step!(0.1)
+      expect(a.data).to eq(0.9)
+      expect(a.grad).to eq(1)
+    end
+  end
+
+  describe "#gradient_step!" do
+    it "applies the gradient step" do
+      a = Micrograd::Value[a: 1]
+      a.backward
+      expect(a.data).to eq(1)
+      expect(a.grad).to eq(1)
+      a.gradient_step!(0.1)
+      expect(a.data).to eq(0.9)
+      expect(a.grad).to eq(1)
+    end
   end
 end

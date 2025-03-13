@@ -6,8 +6,6 @@ module Micrograd
   class Value
     attr_reader :data, :label, :grad, :_backward, :operation, :previous
 
-    attr_writer :data
-
     def initialize(data:, label: nil, operation: nil, previous: [], _backward: -> (_) {})
       @data = data
       @label = label
@@ -138,6 +136,11 @@ module Micrograd
 
     def zero_grad!
       @grad = 0.0
+    end
+
+    def gradient_step!(learning_rate)
+      # This could be written as -learning_rate but this is harder to miss
+      @data += -1 * learning_rate * self.grad
     end
 
     def generate_image
