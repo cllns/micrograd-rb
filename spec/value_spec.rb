@@ -130,7 +130,7 @@ RSpec.describe Micrograd::Value do
     it "allows adding grad" do
       a = Micrograd::Value[a: 2]
       b = Micrograd::Value[b: 3]
-      value = (a * b).add_grad(1)
+      value = (a * b).add_grad!(1)
       expect(value.grad).to eq(1)
     end
   end
@@ -239,7 +239,7 @@ RSpec.describe Micrograd::Value do
   describe "#zero_grad!" do
     it "zeroes out grad" do
       a = Micrograd::Value[a: 1]
-      a.add_grad(0.5)
+      a.add_grad!(0.5)
       expect(a.grad).to eq(0.5)
       a.zero_grad!
       expect(a.grad).to eq(0)

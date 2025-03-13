@@ -47,8 +47,8 @@ module Micrograd
         operation: :+,
         previous: [self, other],
         _backward: lambda do |value|
-          self.add_grad(value.grad)
-          other.add_grad(value.grad)
+          self.add_grad!(value.grad)
+          other.add_grad!(value.grad)
         end
       )
     end
@@ -71,8 +71,8 @@ module Micrograd
         operation: :*,
         previous: [self, other],
         _backward: lambda do |value|
-          self.add_grad(other.data * value.grad)
-          other.add_grad(self.data * value.grad)
+          self.add_grad!(other.data * value.grad)
+          other.add_grad!(self.data * value.grad)
         end
       )
     end
@@ -92,7 +92,7 @@ module Micrograd
         operation: :**,
         previous: [self],
         _backward: lambda do |value|
-          self.add_grad(value.grad * pow * (self.data ** (pow - 1)))
+          self.add_grad!(value.grad * pow * (self.data ** (pow - 1)))
         end
       )
     end
@@ -107,7 +107,7 @@ module Micrograd
         operation: :tanh,
         previous: [self],
         _backward: lambda do |value|
-          self.add_grad(value.grad * (1 - (t ** 2)))
+          self.add_grad!(value.grad * (1 - (t ** 2)))
         end
       )
     end
@@ -118,7 +118,7 @@ module Micrograd
         operation: :exp,
         previous: [self],
         _backward: lambda do |value|
-          self.add_grad(value.grad * value.data)
+          self.add_grad!(value.grad * value.data)
         end
       )
     end
@@ -128,7 +128,7 @@ module Micrograd
       self
     end
 
-    def add_grad(grad)
+    def add_grad!(grad)
       @grad ||= 0.0
       @grad += grad
       self
@@ -143,13 +143,13 @@ module Micrograd
       @data += -1 * learning_rate * self.grad
     end
 
-    def generate_image
-      Visualizer.new(self).generate_image
+    def backward!
+      add_grad!(1)
+      Micrograd::TopoSort.new(self).call.reverse.map { |node| node._backward.call(node) }
     end
 
-    def backward!
-      add_grad(1)
-      Micrograd::TopoSort.new(self).call.reverse.map { |node| node._backward.call(node) }
+    def generate_image
+      Visualizer.new(self).generate_image
     end
 
     def coerce(other)
