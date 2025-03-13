@@ -124,8 +124,13 @@ module Micrograd
     end
 
     def with_label(new_label)
-      @label = new_label
-      self
+      self.class.new(
+        data: self.data,
+        label: new_label,
+        operation: self.operation,
+        previous: self.previous,
+        _backward: self._backward
+      )
     end
 
     def add_grad!(grad)
