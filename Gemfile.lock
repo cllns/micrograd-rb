@@ -113,8 +113,8 @@ DEPENDENCIES
   guard
   guard-shell
   irb
-  rake (~> 13.0)
   micrograd!
+  rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 1.21)
 
