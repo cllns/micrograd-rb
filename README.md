@@ -21,9 +21,10 @@ but (1) I didn't want to just write all the same code he wrote and (2) I learn b
 I know Ruby best (and enjoy writing it the most), so it was the obvious choice.
 
 ## Approach
-I implemented it in **idiomatic** Ruby: I didn't just copy the Python and adapt the syntax directly
+I implemented it in **idiomatic** Ruby: I didn't just copy the Python and adapt the syntax directly:
 * I used bang methods, e.g. `Value#backward!`, since in Ruby we use that to signify that we're mutating the object in-place.
 * I leveraged methods on Enumerable instead of using loops (since we don't have list comprehension in Ruby)
+* I changed expanded short variable/parameter names to be unabbreviated in most cases
 * I used symbol keys, of course
 * I used keyword args in most cases
 * I extracted `Visualizer` and `TopoGraph` classes, instead of encapsulating that logic within `Value`.
@@ -44,6 +45,53 @@ I balanced that with being **pragmatic**:
 
 I **extended** the work from the video slightly. At the end, he builds out the training process using the MLP (multi-level perceptron), ad-hoc in the Jupyter notebook. I did that as well first, in the `MLP` class's spec file. After that, though, I extracted an `Micrograd::Training` class to encapsulate and generalize that work.
 
+
+### Overview of library
+
+#### Value
+The basic object is the `Micrograd::Value`. This has a `data` attribute (which is the value), a `grad` attribute, and a `backward!` method. I wanted to follow the convention established by micrograd (and PyTorch), but I think I prefer to name this class `Node` and have the `data` attribute be named `value` or `scalar` instead. While we're at it, I'd also name `grad` as `gradient`, but that's an even starker break from convention.
+
+This class handles operations, computing `grad`, the `backward!` pass, and `gradient_step!` as well (which is used in the `Training` class). The `backward!` method uses a helper class called `TopoSort`
+
+It also has a convenience method `generate_image`, which uses the `Visualizer` class to generate a visual representation of the network (with [d2](https://github.com/terrastruct/d2)).
+
+#### Building up a neural net (using `Neuron`, `Layer`, `MLP`, and `Training`)
+
+The rest of the classes all stack on top of each other to build a full Neural net(work).
+
+The basic building block there is the `Neuron`. This uses `Value` for its *weights* and *bias*.
+
+Those are combined into a `Layer`, which is then combined into an `MLP` ([multi-layer perceptron](https://en.wikipedia.org/wiki/Multilayer_perceptron)). Again, I'd usually name this class its full name but MLP is a ubiquitous acronym in Deep Learning, and I didn't want to buck the conventions too much.
+
+Finally, there is the `Training` class. This is used to train the Neural net! This is the real guts of the library, the fullest expression of what we're trying to accomplish.
+
+In brief, this takes:
+1. how many layers and what size you want as an array, e.g. [3, 2, 2, 2, 2, 1] signifies: 3 input scalars, 4 'hidden' internal layers of 2 neurons each, and 1 output value.
+2. an array of arrays of `inputs` values
+3. an array of `target` values
+4. an optional `Random` instance (else it just defaults to `Random.new`, helpful for reproducing results and testing)
+
+Then once it's created, the training occurs when `call` is received.
+This takes:
+1. number of `epochs` (how many times the gradient descent occurs)
+2. the `learning_rate`
+3. an optional `varbose` flag if you want the loss function results to be printed as it goes. This is helpful for manually adjusting the number of `epochs` and the `learning_rate`
+
+What this does is :
+1. First `iterate!` on the MLP, by:
+  1. calculating the forward pass,
+  2. calculate the loss (using difference of two squares)
+  3. run `backward!` on the loss
+
+2. Then `epoch` number of times, do the following:
+  1. Descend!! That is: go through all the parameters in the MLP and step them downward a small amount (the `learning_rate`)
+  2. Recalculate the loss, but `iterate!`ing the same way as above
+
+3. Once that is done, return a `Training::Result` object, which holds the last run's `outputs` and the `mlp`. This `MLP` is now the trained neural net.
+
+4. [????](https://youtu.be/2B3slX6-_20?feature=shared&t=6)
+
+5. Profit!
 
 ## Coding modalities
 In the lecture, Andrej uses a Jupyter notebook: these are ubiquitous in Python Data/AI/ML world.
