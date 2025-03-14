@@ -107,7 +107,8 @@ Sometimes I used `bin/console` to load the files and work with them like that, i
 Finally, I transitioned to using RSpec to ensure behavior stayed consistent as I refactored.
 
 ## TODO's
-- [ ] Convert examples.rb to [bake script](https://github.com/ioquatix/bake)
+- [ ] Convert examples.rb to runnable script in `bin/`
+- [ ] Update README with actual usages instead of telling people to look at the specs
 - [ ] Adapt/complete the [exercises](https://colab.research.google.com/drive/1FPTx1RXtBfc4MaTkf7viZZD4U2F9gtKN?usp=sharing) from the video description
 - [ ] Add a note when doing `require "micrograd"` to require the specific parts you need
 
@@ -126,14 +127,7 @@ But if you want to mess around with the code, you can clone this repo.
 I don't see why you'd want to install this as a dependency, but you could do `gem "micrograd", github: "cllns/micrograd"` if you want.
 
 ## Usage
-Take a look at the specs and also `lib/micrograd/examples.rb` to see how to use this library.
-
-You need to require the specific file you want to use. `require "micrograd"` doesn't do anything.
-
-## Development
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+Take a look at the specs, particularly `specs/training_spec.rb`, for the highest level. Or start at `specs/value_spec.rb` and work your way up the stack. There's also a `lib/micrograd/examples.rb` which be be run directly with `ruby lib/micrograd/examples.rb`.
 
 ## Contributing
 No need. This was an educational exercise. :)

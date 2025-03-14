@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "topo_sort"
+require_relative "visualizer"
 
 module Micrograd
   class Value
