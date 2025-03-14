@@ -2,16 +2,16 @@
 
 This is an example implementation of a **small neural network library** in Ruby, with [automatic differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) and [backpropagation](https://en.wikipedia.org/wiki/Backpropagation). If you have no clue what that means, check out [this video series](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi), which explains Neural Networks and Deep Learning visually, without math.
 
-I implemented this library by going through the YouTube lecture 
+I implemented this library by going through the YouTube lecture
 [“The spelled-out intro to neural networks and backpropagation: building micrograd”](https://www.youtube.com/watch?v=VMj-3S1tku0&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ))
 by Andrej Karpathy. It's the first in a series called "Neural Networks: From Zero to Hero", which builds up from the basic building blocks all the way to implementing GPT-2. As I watched the video, I translated the Python code into Ruby.
 
 There's a canonical implementation of the functionality implemented in Python, available as [micrograd](https://github.com/karpathy/micrograd).
-I didn't reference the `micrograd` codebase at all, 
-nor any of the other micrograd implementations [in Ruby](https://github.com/search?utf8=%E2%9C%93&q=micrograd+language%3ARuby+&type=repositories), 
+I didn't reference the `micrograd` codebase at all,
+nor any of the other micrograd implementations [in Ruby](https://github.com/search?utf8=%E2%9C%93&q=micrograd+language%3ARuby+&type=repositories),
 nor in any other languages.
 
-This is a fine codebase to learn from (though you should write it yourself). 
+This is a fine codebase to learn from (though you should write it yourself).
 If you're building anything real, you probably want to use [torch.rb](https://github.com/ankane/torch.rb), which is based on libtorch, the high-performance C++ library that powers PyTorch.
 
 ### Motivation
@@ -39,7 +39,7 @@ And, since it's Ruby, I also implemented it in an **idiosyncratic** way:
 I balanced that with being **pragmatic**:
 * In `lib/micrograd/value.rb`, I do use mutation of instance variables to update `@grad` and `@data`. In many (most?) applications, immutability can provide better performance since it's easier on the Garbage Collector. However, these kind of neural nets are meant to be computed at a massive scale and repeatedly, on GPU's. In that case, creating millions or billions of objects on each iteration would obviously be much slower than mutating in place, since object creation is relatively slow and memory-intensive.
 * In `lib/micrograd/value.rb`, I used `self.` when it's not necessary (and disabled the `Style/RedundantSelf` to allow this). Why? Because many of the methods are operations that reference `other`, so I find it more readable to have symmetry between `self` and `other`. And, for the rest of the class, I wanted to be consistent with that choice. This is also the standard way to access instance variables in Python.
-* I used `Enumerable#reduce` which is an alias for `Enumerable#inject`. I default to using `#inject` but figured non-Rubyists might read this, and `#reduce` is the name that's more common in other languages, so I think it makes more sense here. 
+* I used `Enumerable#reduce` which is an alias for `Enumerable#inject`. I default to using `#inject` but figured non-Rubyists might read this, and `#reduce` is the name that's more common in other languages, so I think it makes more sense here.
 * I kept the leading underscore for `_backward` lambda, to signify it's different from the externally facing `backward!`. I could have named it `backward` (without the bang), but I feel like the underscore reveals the intent that it's an implementation detail and shouldn't be used directly. This is a pattern used occasionally in Ruby, and I think it's worth using here.
 
 I **extended** the work from the video slightly. At the end, he builds out the training process using the MLP (multi-level perceptron), ad-hoc in the Jupyter notebook. I did that as well first, in the `MLP` class's spec file. After that, though, I extracted an `Micrograd::Training` class to encapsulate and generalize that work.
