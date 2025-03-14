@@ -51,6 +51,7 @@ module Micrograd
     end
 
     def calculate_loss(outputs)
+      # Difference of two squares
       targets.zip(outputs).map do |target, output|
         (output - target) ** 2
       end.sum
