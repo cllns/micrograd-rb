@@ -18,6 +18,7 @@ module Micrograd
 
     def call(epochs:, learning_rate:, verbose: false)
       outputs = epochs.times.reduce(nil) do |_, i|
+        # Skip the first pass because it's the initialization
         gradient_descent!(learning_rate) unless i == 0
 
         iterate!((i if verbose))
