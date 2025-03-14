@@ -6,6 +6,8 @@ module Micrograd
   class Training
     attr_reader :mlp, :inputs, :targets
 
+    Result = Data.define(:mlp, :outputs)
+
     def initialize(layer_sizes:, inputs:, targets:, random: Random.new)
       # TODO: make sure sizes match up. or, compute from inputs and targets?
       n_in, *n_outs = layer_sizes
@@ -23,7 +25,7 @@ module Micrograd
 
       print_summary(outputs) if verbose
 
-      outputs.map(&:data)
+      Result.new(mlp:, outputs: outputs.map(&:data))
     end
 
     private

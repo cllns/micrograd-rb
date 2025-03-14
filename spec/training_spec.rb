@@ -32,8 +32,13 @@ RSpec.describe Micrograd::Training do
     end
 
     it "returns results without printing to stdout" do
-      result = training.call(epochs: 20, learning_rate: 0.1)
-      expect(result).to eq(
+      result = nil
+
+      expect {
+        result = training.call(epochs: 20, learning_rate: 0.1)
+      }.to_not output.to_stdout
+
+      expect(result.outputs).to eq(
         [
           0.8920758724901439,
           -0.8269374284014038,
@@ -41,6 +46,9 @@ RSpec.describe Micrograd::Training do
           0.8634266452660331,
         ]
       )
+      expect(
+        result.mlp.parameters.map(&:data).sum
+      ).to eq(7.815233909361957)
     end
 
     it "has verbose option that does print to stdout" do
