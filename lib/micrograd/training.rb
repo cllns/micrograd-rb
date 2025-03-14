@@ -17,7 +17,7 @@ module Micrograd
     end
 
     def call(epochs:, learning_rate:, verbose: false)
-      outputs = epochs.times.reduce(nil) do |outs, i|
+      outputs = epochs.times.reduce(nil) do |_, i|
         gradient_descent!(learning_rate) unless i == 0
 
         iterate!((i if verbose))
