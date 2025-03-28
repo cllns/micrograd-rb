@@ -9,14 +9,15 @@ module Micrograd
     Result = Data.define(:mlp, :outputs)
 
     def initialize(layer_sizes:, inputs:, targets:, random: Random.new)
-      # TODO: make sure sizes match up. or, compute from inputs and targets?
       n_in, *n_outs = layer_sizes
+      # TODO: Ensure n_in == inputs.length, n_outs == targets.length
       @mlp = MLP.new(n_in, n_outs, random:)
       @inputs = inputs
       @targets = targets
     end
 
     def call(epochs:, learning_rate:, verbose: false)
+      # Assign the last iterate! result to outputs
       outputs = epochs.times.reduce(nil) do |_, i|
         # Skip the first pass because it's the initialization
         gradient_descent!(learning_rate) unless i == 0
