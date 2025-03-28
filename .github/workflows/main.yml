@@ -22,8 +22,9 @@ jobs:
           D2_VERSION="0.6.0"  # Replace with the latest version
           curl -L https://github.com/terrastruct/d2/releases/download/v${D2_VERSION}/d2-linux-amd64 -o d2
           chmod +x d2
+          mv d2 /usr/local/bin/d2
       - name: Verify D2 Installation
-        run: ./d2 --version
+        run: d2 --version
       - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
