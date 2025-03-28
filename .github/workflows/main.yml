@@ -21,7 +21,7 @@ jobs:
         run: |
           wget https://github.com/terrastruct/d2/releases/download/v0.6.9/d2-v0.6.9-linux-amd64.tar.gz -O d2.tar.gz
           tar -xvf d2.tar.gz
-          cd d2/
+          cd d2-v0.6.9/
           chmod +x bin/d2
           mv bin/d2 /usr/local/bin/d2
       - name: Verify D2 Installation
