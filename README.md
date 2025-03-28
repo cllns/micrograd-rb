@@ -124,6 +124,8 @@ Finally, I transitioned to using RSpec to ensure behavior stayed consistent as I
 That made it much easier to work with.
 
 ## TODO's
+- [ ] Push to Rubygems.org
+- [ ] Fix CI
 - [ ] Explain Value#backward! and updating grad
 - [ ] Convert examples.rb to runnable script in `bin/`
 - [ ] Update README with actual usages instead of telling people to look at the specs
